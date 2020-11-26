@@ -1,2 +1,2 @@
-# agendar
-Agendar™ Heads-Up Display for being on time.
+# Agendar™
+Heads-Up Display for being on time.
