@@ -6,15 +6,27 @@ import {GOOGLE_CLIENT_ID} from "./config";
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isSignedIn: false,
     }
-
   }
 
   componentDidMount() {
+    const script = document.createElement("script");
+    script.src = "https://apis.google.com/js/platform.js";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      this.initAuth();
+    };
+    const meta = document.createElement("meta");
+    meta.name = "google-signin-client_id";
+    meta.content = "%REACT_APP_GOOGLE_ID_OF_WEB_CLIENT%";
+    document.head.appendChild(meta);
+    document.head.appendChild(script);
+  }
 
+  initAuth() {
     const successCallback = this.onSuccess.bind(this);
 
     window.gapi.load('auth2', () => {
