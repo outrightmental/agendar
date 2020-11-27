@@ -136,10 +136,10 @@ class App extends Component {
                 if (!when) {
                   when = event.start.date;
                 }
-                displayEvents.push(<div key={event.id}>{event.summary} ({when})</div>);
+                displayEvents.push(<div className="event" key={event.id}>{event.summary} ({when})</div>);
               }
             } else {
-              displayEvents = [<div>No upcoming events found.</div>];
+              displayEvents = [<div className="event">No upcoming events found.</div>];
             }
             self.setState({calendarEvents: displayEvents});
           });
@@ -161,13 +161,20 @@ class App extends Component {
       return (
         <div>
           <div id="logoutButton" onClick={() => this.doLogout()}>Logout</div>
-          {this.renderCalendarEvents()}
+          <header className="App-header">
+            <h6>Now</h6>
+            {this.renderCalendarEvents()}
+          </header>
         </div>
       )
     } else {
       return (
         <div>
-          <button id="loginButton">Login with Google</button>
+          <header className="App-header">
+            <h1>Agendar<sup className="tiny">&trade;</sup></h1>
+            <h2>Heads-Up Display<br/> for being on time.</h2>
+            <button id="loginButton">Login with Google</button>
+          </header>
         </div>
       )
     }
@@ -176,11 +183,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <h1>Agendar<sup className="tiny">&trade;</sup></h1>
-          <h2>Heads-Up Display<br/> for being on time.</h2>
-          {this.renderContent()}
-        </header>
+        {this.renderContent()}
       </div>
     );
   }
