@@ -3,7 +3,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #202020;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,4 +29,25 @@ p {
 
 p.error {
   color: #ff0000;
+}
+
+sup.tiny {
+  font-size: 0.2em;
+  vertical-align: top;
+  /* margin-top: 2rem; */
+  /* padding-top: 2rem; */
+  top: 0.8em;
+  position: relative;
+}
+
+#logoutButton {
+  font-size: 10pt;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+  padding: 1em 2em;
+  color: #909090;
+  border: 0 none;
+  cursor: pointer;
 }
