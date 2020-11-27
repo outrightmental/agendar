@@ -1,3 +1,5 @@
+![[main] deploy](https://github.com/outrightmental/agendar/workflows/%5Bmain%5D%20deploy/badge.svg)
+
 # Agendar<sup>&trade;</sup>
 
 **[agendar.outright.io](https://agendar.outright.io)**
