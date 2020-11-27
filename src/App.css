@@ -51,3 +51,7 @@ sup.tiny {
   border: 0 none;
   cursor: pointer;
 }
+
+#loginButton {
+  margin-top: 2em;
+}
