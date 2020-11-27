@@ -1,0 +1,39 @@
+name: "pull request"
+
+on:
+  pull_request
+
+jobs:
+  ReactJS:
+    name: ReactJS
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Build page
+        run: npm run build
