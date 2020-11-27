@@ -12,9 +12,15 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 These environment variables must be set in order to build and run the app. This can by creating an **.env** file in the root of the project, which will be ignored by git-- secrets should Never be checked in to the repository:
 
-```shell
+```
 REACT_APP_GOOGLE_API_KEY=ABC
 REACT_APP_GOOGLE_CLIENT_ID=123
+```
+
+These environment variables are optional (used only in production)
+
+```
+REACT_APP_GOOGLE_ANALYTICS_ID=G-123
 ```
 
 ## Available Scripts
