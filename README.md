@@ -8,6 +8,15 @@ by [Outright Mental](https://outrightmental.com/)<sup>&trade;</sup>
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Environment
+
+These environment variables must be set in order to build and run the app. This can by creating an **.env** file in the root of the project, which will be ignored by git-- secrets should Never be checked in to the repository:
+
+```shell
+REACT_APP_GOOGLE_API_KEY=ABC
+REACT_APP_GOOGLE_CLIENT_ID=123
+```
+
 ## Available Scripts
 
 In the project directory, you can run:

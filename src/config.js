@@ -1,12 +1,8 @@
 export const
 
-  GOOGLE_API_KEY =
-    'AIzaSyDMeOHdQ7sRjWwmK4pXBsL8KPDXYXEyOdw', //Production
-    // 'AIzaSyDGMNlKWChcdRnm06FaAPl5qSJzM8_9XFY', // Development
+  GOOGLE_API_KEY = readMetaTag('REACT_APP_GOOGLE_API_KEY'),
 
-  GOOGLE_CLIENT_ID =
-    '716546716200-k27gns7n7emjglrn2bec5jui3323r0ua.apps.googleusercontent.com', // Production
-    // '307271403290-nirg6c5afjm47qtlloufj0kgrfd05ui7.apps.googleusercontent.com', // Development
+  GOOGLE_CLIENT_ID = readMetaTag('REACT_APP_GOOGLE_CLIENT_ID'),
 
   GOOGLE_SCOPE = [
     "https://www.googleapis.com/auth/calendar.events.readonly",
@@ -29,3 +25,10 @@ export const
   CACHE_INVALIDATE_MILLIS = 1000 * 60 * 60,
 
   CALENDAR_FETCH_ROWS_MAX = 999;
+
+function readMetaTag(name) {
+  let el = document.head.querySelector(`[name=${name}][content]`);
+  if (el && el.content) return el.content;
+  console.error("Cannot retrieve value for META tag named", name);
+  return "n/a";
+}
