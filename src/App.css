@@ -23,8 +23,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-  margin-top: 1em;
-  margin-bottom: 0;
+  margin-bottom: 1em;
+  margin-top: 0;
 }
 
 p.error {
@@ -40,40 +40,77 @@ sup.tiny {
   position: relative;
 }
 
-#logoutButton {
+.uiButton {
   font-size: 10pt;
   position: absolute;
-  top: 0;
-  right: 0;
-  background: transparent;
-  padding: 1em 2em;
-  color: #909090;
-  border: 0 none;
-  cursor: pointer;
-}
-
-#loginButton {
-  margin-top: 2em;
-}
-
-#fullscreenButton {
-  font-size: 10pt;
-  position: absolute;
-  bottom: 0;
-  right: 0;
   background: transparent;
   padding: 1em 1em;
-  color: #909090;
   border: 0 none;
   cursor: pointer;
   opacity: 0.38;
 }
 
-#fullscreenButton:hover {
+.uiButton.lit {
+  opacity: 0.8;
+}
+
+.uiButton:hover {
   opacity: 1.0;
+}
+
+#menuButton {
+  z-index: 11000;
+  top: 0;
+  right: 0;
+}
+
+.menuItem {
+  color: #ffffff;
+  background: #404040;
+  margin-bottom: 20px;
+  padding: 20px 20px 10px 20px;
+}
+
+.menuSelection {
+  cursor: pointer;
+  opacity: 0.62;
+  padding: 10px 20px;
+}
+
+.menuSelection:hover {
+  opacity: 1.0;
+}
+
+#fullscreenButton {
+  bottom: 0;
+  right: 0;
 }
 
 .event {
   font-family: monospace;
   font-size: 10pt;
+}
+
+#menuBackdrop {
+  z-index: 10000;
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 0;
+  padding: 0 0;
+  background: #000000BB;
+}
+
+#menuBody {
+  z-index: 11000;
+  margin: 50px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+#menuBody a {
+  color: #ffffff;
 }
