@@ -1,7 +1,13 @@
 /* global gapi */
 import React, {Component} from 'react';
 import './App.css';
-import {BEAT_INTERVAL_MILLIS, CACHE_INVALIDATE_MILLIS, GOOGLE_CLIENT_CONFIG,} from "./config";
+import {
+  BEAT_INTERVAL_MILLIS,
+  CACHE_INVALIDATE_MILLIS,
+  CALENDAR_FETCH_ROWS_MAX,
+  CALENDAR_FETCH_TO_FUTURE_MILLIS,
+  GOOGLE_CLIENT_CONFIG,
+} from "./config";
 
 class App extends Component {
 
@@ -49,6 +55,7 @@ class App extends Component {
     if (!this.state.isSignedIn) return;
     let nowMillis = Date.now();
     if (!this.state.lastFetchedMillis || this.state.lastFetchedMillis < nowMillis - CACHE_INVALIDATE_MILLIS) {
+      this.fetchCalendarEvents()
       this.setState({lastFetchedMillis: nowMillis});
     }
   }
@@ -99,6 +106,48 @@ class App extends Component {
     );
   }
 
+  fetchCalendarEvents() {
+    // let today = new Date(); //today date
+    // let userEmail = "xxx";
+    // let userTimeZone = "xxx";
+    let self = this;
+
+    console.info("Will initialize client");
+    window.gapi.load('client', () => {
+      gapi.client.init(GOOGLE_CLIENT_CONFIG).then(function () {
+        console.info("Will fetch calendar events");
+        gapi.client.load('calendar', 'v3', function () {
+          gapi.client.calendar.events.list({
+            'calendarId': 'primary',
+            'timeMin': (new Date()).toISOString(),
+            'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
+            'showDeleted': false,
+            'singleEvents': true,
+            'maxResults': CALENDAR_FETCH_ROWS_MAX,
+            'orderBy': 'startTime'
+          }).then(function (response) {
+            let events = response.result.items;
+            let i, displayEvents = [];
+
+            if (events.length > 0) {
+              for (i = 0; i < events.length; i++) {
+                let event = events[i];
+                let when = event.start.dateTime;
+                if (!when) {
+                  when = event.start.date;
+                }
+                displayEvents.push(<div className="event" key={event.id}>{event.summary} ({when})</div>);
+              }
+            } else {
+              displayEvents = [<div className="event">No upcoming events found.</div>];
+            }
+            self.setState({calendarEvents: displayEvents});
+          });
+        });
+      });
+    });
+  }
+
   renderCalendarEvents() {
     return (
       <div>
@@ -112,13 +161,20 @@ class App extends Component {
       return (
         <div>
           <div id="logoutButton" onClick={() => this.doLogout()}>Logout</div>
-          {this.renderCalendarEvents()}
+          <header className="App-header">
+            <h6>Now</h6>
+            {this.renderCalendarEvents()}
+          </header>
         </div>
       )
     } else {
       return (
         <div>
-          <button id="loginButton">Login with Google</button>
+          <header className="App-header">
+            <h1>Agendar<sup className="tiny">&trade;</sup></h1>
+            <h2>Heads-Up Display<br/> for being on time.</h2>
+            <button id="loginButton">Login with Google</button>
+          </header>
         </div>
       )
     }
@@ -127,11 +183,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <h1>Agendar<sup className="tiny">&trade;</sup></h1>
-          <h2>Heads-Up Display<br/> for being on time.</h2>
-          {this.renderContent()}
-        </header>
+        {this.renderContent()}
       </div>
     );
   }

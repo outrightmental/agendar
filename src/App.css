@@ -55,3 +55,8 @@ sup.tiny {
 #loginButton {
   margin-top: 2em;
 }
+
+.event {
+  font-family: monospace;
+  font-size: 10pt;
+}
