@@ -7,6 +7,8 @@ import {
   CALENDAR_FETCH_ROWS_MAX,
   CALENDAR_FETCH_TO_FUTURE_MILLIS,
   GOOGLE_CLIENT_CONFIG,
+  LANG_PRIVACY_PROMISE_1,
+  LANG_PRIVACY_PROMISE_2,
 } from "./config";
 
 
@@ -15,6 +17,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isMenuOpen: false,
       isFullscreen: false,
       isSignedIn: false,
       intervalId: null,
@@ -107,6 +110,13 @@ class App extends Component {
     );
   }
 
+  doMenuButtonClicked() {
+    if (this.state.isMenuOpen)
+      this.setState({isMenuOpen: false});
+    else
+      this.setState({isMenuOpen: true});
+  }
+
   doOpenFullscreen() {
     if (document.documentElement.requestFullscreen)
       document.documentElement.requestFullscreen().then(
@@ -183,48 +193,97 @@ class App extends Component {
     )
   }
 
-  renderContent() {
+  renderMenuButton() {
+    return (
+      <div className={`uiButton ${this.state.isMenuOpen ? 'lit' : ''}`}
+           id="menuButton" onClick={() => this.doMenuButtonClicked()}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
+          <title>
+            Menu
+          </title>
+          <path fill="#ffffff"
+                d="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z"/>
+        </svg>
+      </div>
+    );
+  }
+
+  renderMenuContent() {
+    if (this.state.isMenuOpen) return (
+      <div id="menuBackdrop" onClick={() => this.doMenuButtonClicked()}>
+        <div id="menuBody">
+          <div className="menuItem">
+            <div className="content">
+              <p><strong>Agendar<sup>&trade;</sup></strong> is a Heads-Up Display for being on time.</p>
+              <p>Login with Google to display your Calendar events.</p>
+              <p>{LANG_PRIVACY_PROMISE_1}</p>
+              <p>{LANG_PRIVACY_PROMISE_2}</p>
+              <p>Read the code and contribute on <a target="_blank"
+                                                    rel="noreferrer"
+                                                    href="https://github.com/outrightmental/agendar">GitHub</a></p>
+              <p>Authored with &#9829; by <a target="_blank"
+                                             rel="noreferrer"
+                                             href="https://charneykaye.com">Charney Kaye</a><br/> to meet the
+                heightened strangeness<br/> of working from everywhere.</p>
+              <p>Sponsored by <a target="_blank"
+                                                    rel="noreferrer"
+                                                    href="https://outrightmental.com">Outright Mental</a><sup>&trade;</sup></p>
+            </div>
+          </div>
+          {
+            this.state.isSignedIn ?
+              <div className="menuItem menuSelection" onClick={() => this.doLogout()}>Logout</div> : ''
+          }
+        </div>
+      </div>
+    );
+    else return "";
+  }
+
+  renderFullscreenButton() {
+    if (this.state.isFullscreen) return (
+      <div className="uiButton" id="fullscreenButton" onClick={() => this.doCloseFullscreen()}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+          <title>
+            Exit Fullscreen Mode
+          </title>
+          <path fillRule="evenodd" fill="#ffffff"
+                d="M7 7V1H5v4H1v2h6zM5 19h2v-6H1v2h4v4zm10-4h4v-2h-6v6h2v-4zm0-8h4V5h-4V1h-2v6h2z"/>
+        </svg>
+      </div>
+    );
+    else return (
+      <div className="uiButton" id="fullscreenButton" onClick={() => this.doOpenFullscreen()}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+          <title>
+            Enter Fullscreen Mode
+          </title>
+          <path fillRule="evenodd" fill="#ffffff"
+                d="M1 1v6h2V3h4V1H1zm2 12H1v6h6v-2H3v-4zm14 4h-4v2h6v-6h-2v4zm0-16h-4v2h4v4h2V1h-2z"/>
+        </svg>
+      </div>
+    );
+  }
+
+  renderApp() {
     if (this.state.isSignedIn) {
       return (
-        <div>
-          {this.state.isFullscreen
-            ?
-            <div id="fullscreenButton" onClick={() => this.doCloseFullscreen()}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-                <title>
-                  Exit Fullscreen Mode
-                </title>
-                <path fillRule="evenodd" fill="#ffffff"
-                      d="M7 7V1H5v4H1v2h6zM5 19h2v-6H1v2h4v4zm10-4h4v-2h-6v6h2v-4zm0-8h4V5h-4V1h-2v6h2z"/>
-              </svg>
-            </div>
-            :
-            <div id="fullscreenButton" onClick={() => this.doOpenFullscreen()}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-                <title>
-                  Enter Fullscreen Mode
-                </title>
-                <path fillRule="evenodd" fill="#ffffff"
-                      d="M1 1v6h2V3h4V1H1zm2 12H1v6h6v-2H3v-4zm14 4h-4v2h6v-6h-2v4zm0-16h-4v2h4v4h2V1h-2z"/>
-              </svg>
-            </div>
-          }
-          <div id="logoutButton" onClick={() => this.doLogout()}>Logout</div>
-          <header className="App-header">
-            <h6>Now</h6>
-            {this.renderCalendarEvents()}
-          </header>
-        </div>
+        <header className="App-header">
+          <h6>Now</h6>
+          {this.renderCalendarEvents()}
+        </header>
       )
     } else {
       return (
-        <div>
-          <header className="App-header">
-            <h1>Agendar<sup className="tiny">&trade;</sup></h1>
-            <h2>Heads-Up Display<br/> for being on time.</h2>
-            <button id="loginButton">Login with Google</button>
-          </header>
-        </div>
+        <header className="App-header">
+          <h1>Agendar<sup className="tiny">&trade;</sup></h1>
+          <h2>Heads-Up Display<br/> for being on time.</h2>
+          <button className="space-above" id="loginButton">Login with Google</button>
+          <div className="content space-above">
+            <p>{LANG_PRIVACY_PROMISE_1}</p>
+            <p>{LANG_PRIVACY_PROMISE_2}</p>
+          </div>
+        </header>
       )
     }
   }
@@ -232,7 +291,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.renderContent()}
+        {this.renderFullscreenButton()}
+        {this.renderMenuButton()}
+        {this.renderMenuContent()}
+        {this.renderApp()}
       </div>
     );
   }

@@ -1,3 +1,5 @@
+import React from "react";
+
 export const
 
   GOOGLE_API_KEY = readMetaTag('REACT_APP_GOOGLE_API_KEY'),
@@ -19,6 +21,10 @@ export const
     discoveryDocs: GOOGLE_DISCOVERY_DOCS,
     scope: GOOGLE_SCOPE,
   },
+
+  LANG_PRIVACY_PROMISE_1 = <span>We <em>never</em> access your information!</span>,
+
+  LANG_PRIVACY_PROMISE_2 = <span>Your browser will connect directly to Google Calendar<br/> in order display upcoming events in a unique way.</span>,
 
   BEAT_INTERVAL_MILLIS = 1000, // once per second, like a clock
 
