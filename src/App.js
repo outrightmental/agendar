@@ -118,7 +118,6 @@ class App extends Component {
     } else {
       return (
         <div>
-<br/>,<br/>
           <button id="loginButton">Login with Google</button>
         </div>
       )
