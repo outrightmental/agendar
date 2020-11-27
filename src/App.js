@@ -1,7 +1,13 @@
 /* global gapi */
 import React, {Component} from 'react';
 import './App.css';
-import {BEAT_INTERVAL_MILLIS, CACHE_INVALIDATE_MILLIS, GOOGLE_CLIENT_CONFIG,} from "./config";
+import {
+  BEAT_INTERVAL_MILLIS,
+  CACHE_INVALIDATE_MILLIS,
+  CALENDAR_FETCH_ROWS_MAX,
+  CALENDAR_FETCH_TO_FUTURE_MILLIS,
+  GOOGLE_CLIENT_CONFIG,
+} from "./config";
 
 class App extends Component {
 
@@ -110,102 +116,37 @@ class App extends Component {
     window.gapi.load('client', () => {
       gapi.client.init(GOOGLE_CLIENT_CONFIG).then(function () {
         console.info("Will fetch calendar events");
-        gapi.client.calendar.events.list({
-          'calendarId': 'primary',
-          'timeMin': (new Date()).toISOString(),
-          'showDeleted': false,
-          'singleEvents': true,
-          'maxResults': 10,
-          'orderBy': 'startTime'
-        }).then(function (response) {
-          let events = response.result.items;
-          let i, displayEvents = [];
+        gapi.client.load('calendar', 'v3', function () {
+          gapi.client.calendar.events.list({
+            'calendarId': 'primary',
+            'timeMin': (new Date()).toISOString(),
+            'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
+            'showDeleted': false,
+            'singleEvents': true,
+            'maxResults': CALENDAR_FETCH_ROWS_MAX,
+            'orderBy': 'startTime'
+          }).then(function (response) {
+            let events = response.result.items;
+            let i, displayEvents = [];
 
-          if (events.length > 0) {
-            for (i = 0; i < events.length; i++) {
-              let event = events[i];
-              let when = event.start.dateTime;
-              if (!when) {
-                when = event.start.date;
+            if (events.length > 0) {
+              for (i = 0; i < events.length; i++) {
+                let event = events[i];
+                let when = event.start.dateTime;
+                if (!when) {
+                  when = event.start.date;
+                }
+                displayEvents.push(<div key={event.id}>{event.summary} ({when})</div>);
               }
-              displayEvents.push(<div>{event.summary} ({when})</div>);
+            } else {
+              displayEvents = [<div>No upcoming events found.</div>];
             }
-          } else {
-            displayEvents = [<div>No upcoming events found.</div>];
-          }
-          self.setState({calendarEvents: displayEvents});
+            self.setState({calendarEvents: displayEvents});
+          });
         });
       });
     });
   }
-
-  /*
-  TODO use or delete version 2
-      console.info("Will load client");
-      window.gapi.load('client:calendar', () => {
-        console.info("Will fetch calendar events");
-        gapi.client.calendar.events.list({
-          'calendarId': 'primary',
-          'timeMin': (new Date()).toISOString(),
-          'showDeleted': false,
-          'singleEvents': true,
-          'maxResults': 10,
-          'orderBy': 'startTime'
-        }).then(function (response) {
-          let events = response.result.items;
-          let i, displayEvents = [];
-
-          if (events.length > 0) {
-            for (i = 0; i < events.length; i++) {
-              let event = events[i];
-              let when = event.start.dateTime;
-              if (!when) {
-                when = event.start.date;
-              }
-              displayEvents.push(<div>{event.summary} ({when})</div>);
-            }
-          } else {
-            displayEvents = [<div>No upcoming events found.</div>];
-          }
-          self.setState({calendarEvents: displayEvents});
-        });
-      });
-  */
-
-
-  /*
-  TODO use or delete version 1
-      window.gapi.load('calendar', 'v3', function () {
-        const request = gapi.client.calendar.events.list({
-          'calendarId': userEmail,
-          'timeZone': userTimeZone,
-          'singleEvents': true,
-          'timeMin': today.toISOString(), //gathers only events not happened yet
-          'maxResults': CALENDAR_FETCH_ROWS_MAX,
-          'orderBy': 'startTime'
-        });
-        request.execute(function (resp) {
-          let events = [];
-          for (let i = 0; i < resp.items.length; i++) {
-            const item = resp.items[i];
-            const allDay = !!item.start.date;
-            const startDT = allDay ? item.start.date : item.start.dateTime;
-            const dateTime = startDT.split("T"); //split date from time
-            const date = dateTime[0].split("-"); //split yyyy mm dd
-            const startYear = date[0];
-            const startMonth = monthString(date[1]);
-            const startDay = date[2];
-            const startDateISO = new Date(startMonth + " " + startDay + ", " + startYear + " 00:00:00");
-            const startDayWeek = dayString(startDateISO.getDay());
-            const time = dateTime[1].split(":"); //split hh ss etc...
-            const startHour = pad2Digits(time[0]);
-            const startMin = pad2Digits(time[1]);
-            events.push(`${startYear} ${startMonth} ${startDay} ${startDayWeek} ${startHour}:${startMin}`);
-          }
-          self.setState({calendarEvents: events});
-        });
-  */
-
 
   renderCalendarEvents() {
     return (

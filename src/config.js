@@ -24,7 +24,9 @@ export const
 
   CACHE_INVALIDATE_MILLIS = 1000 * 60 * 60,
 
-  CALENDAR_FETCH_ROWS_MAX = 999;
+  CALENDAR_FETCH_TO_FUTURE_MILLIS = 1000 * 60 * 60 * 24,
+
+  CALENDAR_FETCH_ROWS_MAX = 99;
 
 function readMetaTag(name) {
   let el = document.head.querySelector(`[name=${name}][content]`);
