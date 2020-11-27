@@ -9,11 +9,13 @@ import {
   GOOGLE_CLIENT_CONFIG,
 } from "./config";
 
+
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      isFullscreen: false,
       isSignedIn: false,
       intervalId: null,
       lastFetchedMillis: null,
@@ -91,10 +93,9 @@ class App extends Component {
   }
 
   doLogout() {
-    let self = this;
     this.auth2.signOut().then(
       () => {
-        self.setState({
+        this.setState({
           isSignedIn: false,
           lastFetchedMillis: null,
         })
@@ -106,17 +107,42 @@ class App extends Component {
     );
   }
 
+  doOpenFullscreen() {
+    if (document.documentElement.requestFullscreen)
+      document.documentElement.requestFullscreen().then(
+        () => {
+          this.setState({isFullscreen: true})
+        },
+        () => {
+          alert("Failed to open in fullscreen mode!");
+        }
+      );
+    else alert("Fullscreen mode not supported in your browser!");
+  }
+
+  doCloseFullscreen() {
+    if (document.exitFullscreen)
+      document.exitFullscreen().then(
+        () => {
+          this.setState({isFullscreen: false})
+        },
+        () => {
+          alert("Failed to close fullscreen mode!");
+        }
+      );
+    else alert("Fullscreen mode not supported in your browser!");
+  }
+
   fetchCalendarEvents() {
     // let today = new Date(); //today date
     // let userEmail = "xxx";
     // let userTimeZone = "xxx";
-    let self = this;
 
     console.info("Will initialize client");
     window.gapi.load('client', () => {
-      gapi.client.init(GOOGLE_CLIENT_CONFIG).then(function () {
+      gapi.client.init(GOOGLE_CLIENT_CONFIG).then(() => {
         console.info("Will fetch calendar events");
-        gapi.client.load('calendar', 'v3', function () {
+        gapi.client.load('calendar', 'v3', () => {
           gapi.client.calendar.events.list({
             'calendarId': 'primary',
             'timeMin': (new Date()).toISOString(),
@@ -125,7 +151,7 @@ class App extends Component {
             'singleEvents': true,
             'maxResults': CALENDAR_FETCH_ROWS_MAX,
             'orderBy': 'startTime'
-          }).then(function (response) {
+          }).then((response) => {
             let events = response.result.items;
             let i, displayEvents = [];
 
@@ -141,7 +167,7 @@ class App extends Component {
             } else {
               displayEvents = [<div className="event">No upcoming events found.</div>];
             }
-            self.setState({calendarEvents: displayEvents});
+            this.setState({calendarEvents: displayEvents});
           });
         });
       });
@@ -160,6 +186,28 @@ class App extends Component {
     if (this.state.isSignedIn) {
       return (
         <div>
+          {this.state.isFullscreen
+            ?
+            <div id="fullscreenButton" onClick={() => this.doCloseFullscreen()}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+                <title>
+                  Exit Fullscreen Mode
+                </title>
+                <path fillRule="evenodd" fill="#ffffff"
+                      d="M7 7V1H5v4H1v2h6zM5 19h2v-6H1v2h4v4zm10-4h4v-2h-6v6h2v-4zm0-8h4V5h-4V1h-2v6h2z"/>
+              </svg>
+            </div>
+            :
+            <div id="fullscreenButton" onClick={() => this.doOpenFullscreen()}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+                <title>
+                  Enter Fullscreen Mode
+                </title>
+                <path fillRule="evenodd" fill="#ffffff"
+                      d="M1 1v6h2V3h4V1H1zm2 12H1v6h6v-2H3v-4zm14 4h-4v2h6v-6h-2v4zm0-16h-4v2h4v4h2V1h-2z"/>
+              </svg>
+            </div>
+          }
           <div id="logoutButton" onClick={() => this.doLogout()}>Logout</div>
           <header className="App-header">
             <h6>Now</h6>
