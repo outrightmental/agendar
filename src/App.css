@@ -114,3 +114,12 @@ sup.tiny {
 #menuBody a {
   color: #ffffff;
 }
+
+.content {
+  font-family: monospace;
+  font-size: 10pt;
+}
+
+.space-above {
+  margin-top: 20px;
+}

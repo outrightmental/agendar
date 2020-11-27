@@ -7,6 +7,8 @@ import {
   CALENDAR_FETCH_ROWS_MAX,
   CALENDAR_FETCH_TO_FUTURE_MILLIS,
   GOOGLE_CLIENT_CONFIG,
+  LANG_PRIVACY_PROMISE_1,
+  LANG_PRIVACY_PROMISE_2,
 } from "./config";
 
 
@@ -208,15 +210,30 @@ class App extends Component {
 
   renderMenuContent() {
     if (this.state.isMenuOpen) return (
-      <div id="menuBackdrop">
+      <div id="menuBackdrop" onClick={() => this.doMenuButtonClicked()}>
         <div id="menuBody">
           <div className="menuItem">
-            <p><strong>Agendar<sup>&trade;</sup></strong> is a Heads-Up Display for being on time.</p>
-            <p>Read the code and contribute on <a target="_blank"
-                                                  rel="noreferrer"
-                                                  href="https://github.com/outrightmental/agendar">GitHub</a>.</p>
+            <div className="content">
+              <p><strong>Agendar<sup>&trade;</sup></strong> is a Heads-Up Display for being on time.</p>
+              <p>Login with Google to display your Calendar events.</p>
+              <p>{LANG_PRIVACY_PROMISE_1}</p>
+              <p>{LANG_PRIVACY_PROMISE_2}</p>
+              <p>Read the code and contribute on <a target="_blank"
+                                                    rel="noreferrer"
+                                                    href="https://github.com/outrightmental/agendar">GitHub</a></p>
+              <p>Authored with &#9829; by <a target="_blank"
+                                             rel="noreferrer"
+                                             href="https://charneykaye.com">Charney Kaye</a><br/> to meet the
+                heightened strangeness<br/> of working from everywhere.</p>
+              <p>Sponsored by <a target="_blank"
+                                                    rel="noreferrer"
+                                                    href="https://outrightmental.com">Outright Mental</a><sup>&trade;</sup></p>
+            </div>
           </div>
-          <div className="menuItem menuSelection" onClick={() => this.doLogout()}>Logout</div>
+          {
+            this.state.isSignedIn ?
+              <div className="menuItem menuSelection" onClick={() => this.doLogout()}>Logout</div> : ''
+          }
         </div>
       </div>
     );
@@ -248,28 +265,25 @@ class App extends Component {
     );
   }
 
-  renderContent() {
+  renderApp() {
     if (this.state.isSignedIn) {
       return (
-        <div>
-          {this.renderFullscreenButton()}
-          {this.renderMenuButton()}
-          {this.renderMenuContent()}
-          <header className="App-header">
-            <h6>Now</h6>
-            {this.renderCalendarEvents()}
-          </header>
-        </div>
+        <header className="App-header">
+          <h6>Now</h6>
+          {this.renderCalendarEvents()}
+        </header>
       )
     } else {
       return (
-        <div>
-          <header className="App-header">
-            <h1>Agendar<sup className="tiny">&trade;</sup></h1>
-            <h2>Heads-Up Display<br/> for being on time.</h2>
-            <button id="loginButton">Login with Google</button>
-          </header>
-        </div>
+        <header className="App-header">
+          <h1>Agendar<sup className="tiny">&trade;</sup></h1>
+          <h2>Heads-Up Display<br/> for being on time.</h2>
+          <button className="space-above" id="loginButton">Login with Google</button>
+          <div className="content space-above">
+            <p>{LANG_PRIVACY_PROMISE_1}</p>
+            <p>{LANG_PRIVACY_PROMISE_2}</p>
+          </div>
+        </header>
       )
     }
   }
@@ -277,7 +291,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.renderContent()}
+        {this.renderFullscreenButton()}
+        {this.renderMenuButton()}
+        {this.renderMenuContent()}
+        {this.renderApp()}
       </div>
     );
   }
