@@ -124,10 +124,11 @@ class App extends Component {
     if (document.exitFullscreen)
       document.exitFullscreen().then(
         () => {
-          this.setState({isFullscreen: false})
+          this.setState({isFullscreen: false});
         },
         () => {
-          alert("Failed to close fullscreen mode!");
+          // quietly assume that we have failed to detect somehow that fullscreen was already exited
+          this.setState({isFullscreen: false});
         }
       );
     else alert("Fullscreen mode not supported in your browser!");
