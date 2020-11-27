@@ -129,7 +129,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1>Agendar<sup className="tiny">&trade;</sup></h1>
-          <h2>Heads-Up Display for being on time.</h2>
+          <h2>Heads-Up Display<br/> for being on time.</h2>
           {this.renderContent()}
         </header>
       </div>
