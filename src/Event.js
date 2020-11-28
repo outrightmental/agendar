@@ -5,13 +5,13 @@ import './Event.scss';
 
 const Event = function (props) {
   let event = props.event;
-  let when = event.start.dateTime;
-  if (!when) {
-    when = event.start.date;
-  }
+  let date = event.start.dateTime ?
+    new Date(event.start.dateTime) :
+    new Date(event.start.date);
+  let tMinusSeconds = Math.floor((date.getTime() - Date.now()) / 1000);
   return (
     <div className="agendar-event" key={event.id}>
-      <div className="time">{when}</div>
+      <div className="time">T-{tMinusSeconds}s</div>
       <div className="summary">{event.summary}</div>
     </div>
   );
