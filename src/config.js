@@ -1,5 +1,3 @@
-import React from "react";
-
 export const
 
   GOOGLE_API_KEY = readMetaTag('REACT_APP_GOOGLE_API_KEY'),
