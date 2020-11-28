@@ -14,7 +14,7 @@ Your browser will connect directly to Google Calendar in order display upcoming 
 
 Authored with &#9829; by <a target="_blank"
                                  rel="noreferrer"
-                                 href="https://charneykaye.com">Charney Kaye</a> to meet the heightened strangeness of working from everywhere.
+                                 href="https://charneykaye.com">Charney Kaye</a> to meet the heightened strangeness of working from the internet.
 
 Sponsored by <a target="_blank"
                      rel="noreferrer"
