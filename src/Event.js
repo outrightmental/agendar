@@ -1,15 +1,19 @@
 // Copyleft 2020 Outright Mental
 
 import React from "react";
+import './Event.scss';
 
 const Event = function (props) {
   let event = props.event;
-  let when = event.start.dateTime;
-  if (!when) {
-    when = event.start.date;
-  }
+  let date = event.start.dateTime ?
+    new Date(event.start.dateTime) :
+    new Date(event.start.date);
+  let tMinusSeconds = Math.floor((date.getTime() - Date.now()) / 1000);
   return (
-    <div className="event" key={event.id}>{event.summary} ({when})</div>
+    <div className="agendar-event" key={event.id}>
+      <div className="time">{date.toString()} (T-{tMinusSeconds}s)</div>
+      <div className="summary">{event.summary}</div>
+    </div>
   );
 }
 

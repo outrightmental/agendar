@@ -3,6 +3,7 @@
 $ui-z-index: 11000;
 $menu-backdrop-z-index: 9000;
 $menu-z-index: 9500;
+$minimum-width-for-vertical-orientation: 720px;
 
 @mixin body_background() {
   background: #000000;
