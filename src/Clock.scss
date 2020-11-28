@@ -2,6 +2,16 @@
 
 @import "palette";
 
+@media only screen and (min-width:$minimum-width-for-vertical-orientation) {
+  .time {
+    margin-bottom: 0;
+  }
+
+  .date {
+    margin-bottom: 0;
+  }
+}
+
 #clock {
   @include display_font;
 
