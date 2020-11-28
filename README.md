@@ -8,6 +8,42 @@ Heads-Up Display for being on time.
 
 by [Outright Mental](https://outrightmental.com/)<sup>&trade;</sup>
 
+<div id="static-content-privacy-promise">
+  <p>We <em>never</em> access your information!</p>
+  <p>Your browser will connect directly to Google Calendar in order display upcoming events in a unique way.</p>
+</div>
+
+<div id="static-content-intro">
+  <p><strong>Agendar<sup>&trade;</sup></strong> is a Heads-Up Display for being on time.</p>
+  <p>Login with Google to display your Calendar events.</p>
+</div>
+
+<div id="static-content-about">
+  <p>Read the code and contribute on <a target="_blank"
+                                        rel="noreferrer"
+                                        href="https://github.com/outrightmental/agendar">GitHub</a></p>
+  <p>Authored with &#9829; by <a target="_blank"
+                                 rel="noreferrer"
+                                 href="https://charneykaye.com">Charney Kaye</a> to meet the
+    heightened strangeness of working from everywhere.</p>
+  <p>Sponsored by <a target="_blank"
+                     rel="noreferrer"
+                     href="https://outrightmental.com">Outright Mental</a><sup>&trade;</sup></p>
+</div>
+
+<div id="static-content-legal">
+  <p>Here's the
+    <a target="_blank"
+       rel="noreferrer"
+       href="https://privacy.outright.io">Privacy Policy</a>
+    and
+    <a target="_blank"
+       rel="noreferrer"
+       href="https://terms.outright.io">Terms & Conditions of Use</a>
+  </p>
+</div>
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Environment
