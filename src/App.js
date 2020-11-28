@@ -7,10 +7,8 @@ import {
   CALENDAR_FETCH_ROWS_MAX,
   CALENDAR_FETCH_TO_FUTURE_MILLIS,
   GOOGLE_CLIENT_CONFIG,
-  LANG_PRIVACY_PROMISE_1,
-  LANG_PRIVACY_PROMISE_2,
 } from "./config";
-
+import {Content} from "./Content";
 
 class App extends Component {
 
@@ -214,20 +212,10 @@ class App extends Component {
         <div id="menuBody">
           <div className="menuItem">
             <div className="content">
-              <p><strong>Agendar<sup>&trade;</sup></strong> is a Heads-Up Display for being on time.</p>
-              <p>Login with Google to display your Calendar events.</p>
-              <p>{LANG_PRIVACY_PROMISE_1}</p>
-              <p>{LANG_PRIVACY_PROMISE_2}</p>
-              <p>Read the code and contribute on <a target="_blank"
-                                                    rel="noreferrer"
-                                                    href="https://github.com/outrightmental/agendar">GitHub</a></p>
-              <p>Authored with &#9829; by <a target="_blank"
-                                             rel="noreferrer"
-                                             href="https://charneykaye.com">Charney Kaye</a><br/> to meet the
-                heightened strangeness<br/> of working from everywhere.</p>
-              <p>Sponsored by <a target="_blank"
-                                                    rel="noreferrer"
-                                                    href="https://outrightmental.com">Outright Mental</a><sup>&trade;</sup></p>
+              <Content name="intro"/>
+              <Content name="privacy-promise"/>
+              <Content name="about"/>
+              <Content name="legal"/>
             </div>
           </div>
           {
@@ -280,8 +268,7 @@ class App extends Component {
           <h2>Heads-Up Display<br/> for being on time.</h2>
           <button className="space-above" id="loginButton">Login with Google</button>
           <div className="content space-above">
-            <p>{LANG_PRIVACY_PROMISE_1}</p>
-            <p>{LANG_PRIVACY_PROMISE_2}</p>
+            <Content name="privacy-promise"/>
           </div>
         </header>
       )

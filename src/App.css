@@ -120,6 +120,15 @@ sup.tiny {
   font-size: 10pt;
 }
 
+@media only screen and (min-width: 480px) {
+  .content {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 480px;
+  }
+}
+
 .space-above {
   margin-top: 20px;
 }

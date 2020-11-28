@@ -5,7 +5,11 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=%REACT_APP_GOOGLE_ANALYTICS_ID%"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
     gtag('js', new Date());
 
     gtag('config', '%REACT_APP_GOOGLE_ANALYTICS_ID%');
@@ -39,6 +43,42 @@
   <title>Agendar™ | Heads-Up Display for being on time</title>
 </head>
 <body>
+
+<div id="static-content-privacy-promise">
+  <p>We <em>never</em> access your information!</p>
+  <p>Your browser will connect directly to Google Calendar in order display upcoming events in a unique way.</p>
+</div>
+
+<div id="static-content-intro">
+  <p><strong>Agendar<sup>&trade;</sup></strong> is a Heads-Up Display for being on time.</p>
+  <p>Login with Google to display your Calendar events.</p>
+</div>
+
+<div id="static-content-about">
+  <p>Read the code and contribute on <a target="_blank"
+                                        rel="noreferrer"
+                                        href="https://github.com/outrightmental/agendar">GitHub</a></p>
+  <p>Authored with &#9829; by <a target="_blank"
+                                 rel="noreferrer"
+                                 href="https://charneykaye.com">Charney Kaye</a> to meet the
+    heightened strangeness of working from everywhere.</p>
+  <p>Sponsored by <a target="_blank"
+                     rel="noreferrer"
+                     href="https://outrightmental.com">Outright Mental</a><sup>&trade;</sup></p>
+</div>
+
+<div id="static-content-legal">
+  <p>Here's the
+    <a target="_blank"
+       rel="noreferrer"
+       href="https://privacy.outright.io">Privacy Policy</a>
+    and
+    <a target="_blank"
+       rel="noreferrer"
+       href="https://terms.outright.io">Terms & Conditions of Use</a>
+  </p>
+</div>
+
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <div id="root"></div>
 <!--
