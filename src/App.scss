@@ -33,21 +33,19 @@
 }
 
 #agendar-calendar {
+  padding-top: 2em;
   flex-basis: 62%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
 #agendar-clock {
+  padding-top: 2em;
   flex-basis: 38%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }

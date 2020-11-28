@@ -57,6 +57,8 @@ class App extends Component {
     if (!this.state.lastFetchedMillis || this.state.lastFetchedMillis < nowMillis - CACHE_INVALIDATE_MILLIS) {
       this.fetchCalendarEvents()
       this.setState({lastFetchedMillis: nowMillis});
+    } else {
+      this.setState({calendarEvents: this.state.calendarEvents});
     }
   }
 

@@ -1,0 +1,27 @@
+// Copyleft 2020 Outright Mental
+
+@import "palette";
+
+.agendar-event {
+  @include display_font;
+  @include module_background;
+  display: block;
+
+  margin-bottom: 20px;
+  padding: 10px 10px;
+
+  .summary {
+
+  }
+
+  .time {
+    font-size: 11pt;
+  }
+}
+
+@media only screen and (min-width: 480px) {
+  .agendar-event {
+    margin-right: 20px;
+  }
+}
+

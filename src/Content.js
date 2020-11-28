@@ -2,6 +2,11 @@
 
 import React from "react";
 
+/*
+ Actual content is defined in /public/index.html so that search engines can index it!
+ This component scrapes the elements with ids beginning with the prefix, caches the content and deletes the tags.
+ */
+
 const CONTENT_ID_PREFIX = "static-content-";
 
 // Initialize by cutting all content found in index.html

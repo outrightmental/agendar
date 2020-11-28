@@ -1,6 +1,7 @@
 // Copyleft 2020 Outright Mental
 
 import React from "react";
+import './Event.scss';
 
 const Event = function (props) {
   let event = props.event;
@@ -9,7 +10,10 @@ const Event = function (props) {
     when = event.start.date;
   }
   return (
-    <div className="event" key={event.id}>{event.summary} ({when})</div>
+    <div className="agendar-event" key={event.id}>
+      <div className="time">{when}</div>
+      <div className="summary">{event.summary}</div>
+    </div>
   );
 }
 
