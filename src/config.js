@@ -22,9 +22,9 @@ export const
 
   BEAT_INTERVAL_MILLIS = 1000, // once per second, like a clock
 
-  CACHE_INVALIDATE_MILLIS = 1000 * 60 * 60,
+  CACHE_INVALIDATE_MILLIS = 15 /* minutes */ * 60 * 1000,
 
-  CALENDAR_FETCH_TO_FUTURE_MILLIS = 1000 * 60 * 60 * 24,
+  CALENDAR_FETCH_TO_FUTURE_MILLIS = 24 /* hours */ * 60 * 60 * 1000,
 
   CALENDAR_FETCH_ROWS_MAX = 99;
 
@@ -34,3 +34,4 @@ function readMetaTag(name) {
   console.error("Cannot retrieve value for META tag named", name);
   return "n/a";
 }
+
