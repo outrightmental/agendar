@@ -1,3 +1,5 @@
+// Copyleft 2020 Outright Mental
+
 import React from "react";
 
 const CONTENT_ID_PREFIX = "static-content-";

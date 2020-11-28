@@ -1,8 +1,10 @@
+// Copyleft 2020 Outright Mental
+
 /* global gapi */
 import React, {Component} from 'react';
 import './App.scss';
 import {
-  BEAT_INTERVAL_MILLIS,
+  APP_INTERVAL_MILLIS,
   CACHE_INVALIDATE_MILLIS,
   CALENDAR_FETCH_ROWS_MAX,
   CALENDAR_FETCH_TO_FUTURE_MILLIS,
@@ -32,20 +34,13 @@ class App extends Component {
     script.onload = () => {
       this.didLoadGoogleApi();
     };
-    /*
-    FUTURE bring back?
-        const meta = document.createElement("meta");
-        meta.name = "google-signin-client_id";
-        meta.content = "%REACT_APP_GOOGLE_ID_OF_WEB_CLIENT%";
-        document.head.appendChild(meta);
-    */
     document.head.appendChild(script);
 
     // Begin Interval
     this.setState({
       intervalId: setInterval(() => {
         this.pulse();
-      }, BEAT_INTERVAL_MILLIS)
+      }, APP_INTERVAL_MILLIS)
     });
   }
 

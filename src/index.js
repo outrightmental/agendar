@@ -1,3 +1,5 @@
+// Copyleft 2020 Outright Mental
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
