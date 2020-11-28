@@ -1,6 +1,6 @@
 /* global gapi */
 import React, {Component} from 'react';
-import './App.css';
+import './App.scss';
 import {
   BEAT_INTERVAL_MILLIS,
   CACHE_INVALIDATE_MILLIS,
@@ -83,7 +83,7 @@ class App extends Component {
         height: 50,
         onsuccess: successCallback
       };
-      gapi.signin2.render('loginButton', opts)
+      gapi.signin2.render('login-button', opts)
     })
   }
 
@@ -193,8 +193,8 @@ class App extends Component {
 
   renderMenuButton() {
     return (
-      <div className={`uiButton ${this.state.isMenuOpen ? 'lit' : ''}`}
-           id="menuButton" onClick={() => this.doMenuButtonClicked()}>
+      <div className={`ui-button ${this.state.isMenuOpen ? 'lit' : ''}`}
+           id="menu-button" onClick={() => this.doMenuButtonClicked()}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
           <title>
             Menu
@@ -208,9 +208,9 @@ class App extends Component {
 
   renderMenuContent() {
     if (this.state.isMenuOpen) return (
-      <div id="menuBackdrop" onClick={() => this.doMenuButtonClicked()}>
-        <div id="menuBody">
-          <div className="menuItem">
+      <div id="menu-backdrop" onClick={() => this.doMenuButtonClicked()}>
+        <div id="menu-body">
+          <div className="menu-item">
             <div className="content">
               <Content name="intro"/>
               <Content name="privacy-promise"/>
@@ -220,7 +220,7 @@ class App extends Component {
           </div>
           {
             this.state.isSignedIn ?
-              <div className="menuItem menuSelection" onClick={() => this.doLogout()}>Logout</div> : ''
+              <div className="menu-item menu-selection" onClick={() => this.doLogout()}>Logout</div> : ''
           }
         </div>
       </div>
@@ -230,7 +230,7 @@ class App extends Component {
 
   renderFullscreenButton() {
     if (this.state.isFullscreen) return (
-      <div className="uiButton" id="fullscreenButton" onClick={() => this.doCloseFullscreen()}>
+      <div className="ui-button" id="fullscreen-button" onClick={() => this.doCloseFullscreen()}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
           <title>
             Exit Fullscreen Mode
@@ -241,7 +241,7 @@ class App extends Component {
       </div>
     );
     else return (
-      <div className="uiButton" id="fullscreenButton" onClick={() => this.doOpenFullscreen()}>
+      <div className="ui-button" id="fullscreen-button" onClick={() => this.doOpenFullscreen()}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
           <title>
             Enter Fullscreen Mode
@@ -256,17 +256,17 @@ class App extends Component {
   renderApp() {
     if (this.state.isSignedIn) {
       return (
-        <header className="App-header">
+        <header className="app-header">
           <h6>Now</h6>
           {this.renderCalendarEvents()}
         </header>
       )
     } else {
       return (
-        <header className="App-header">
+        <header className="app-header">
           <h1>Agendar<sup className="tiny">&trade;</sup></h1>
           <h2>Heads-Up Display<br/> for being on time.</h2>
-          <button className="space-above" id="loginButton">Login with Google</button>
+          <button className="space-above" id="login-button">Login with Google</button>
           <div className="content space-above">
             <Content name="privacy-promise"/>
           </div>
@@ -277,7 +277,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="app">
         {this.renderFullscreenButton()}
         {this.renderMenuButton()}
         {this.renderMenuContent()}
