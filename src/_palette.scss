@@ -1,0 +1,24 @@
+// Copyleft 2020 Outright Mental
+
+$ui-z-index: 11000;
+$menu-backdrop-z-index: 9000;
+$menu-z-index: 9500;
+
+@mixin body_background() {
+  background: #000000;
+  background: radial-gradient(ellipse at center, #202020 0%, #000000 200%);
+  background-size: 100%;
+}
+
+@mixin module_background() {
+  //background: #66666600;
+  background: radial-gradient(ellipse at center, #66666670 10%, #66666640 200%);
+  background-size: 100%;
+}
+
+@mixin display_font() {
+  font-family: 'Share Tech Mono', monospace;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0 0 14px #999, 0 0 20px rgba(175, 175, 175, 0);
+}

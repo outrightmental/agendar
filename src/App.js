@@ -1,14 +1,18 @@
+// Copyleft 2020 Outright Mental
+
 /* global gapi */
 import React, {Component} from 'react';
 import './App.scss';
 import {
-  BEAT_INTERVAL_MILLIS,
+  APP_INTERVAL_MILLIS,
   CACHE_INVALIDATE_MILLIS,
   CALENDAR_FETCH_ROWS_MAX,
   CALENDAR_FETCH_TO_FUTURE_MILLIS,
   GOOGLE_CLIENT_CONFIG,
-} from "./config";
-import {Content} from "./Content";
+} from "./_config";
+import Content from "./Content";
+import Event from "./Event";
+import Clock from "./Clock";
 
 class App extends Component {
 
@@ -32,20 +36,13 @@ class App extends Component {
     script.onload = () => {
       this.didLoadGoogleApi();
     };
-    /*
-    FUTURE bring back?
-        const meta = document.createElement("meta");
-        meta.name = "google-signin-client_id";
-        meta.content = "%REACT_APP_GOOGLE_ID_OF_WEB_CLIENT%";
-        document.head.appendChild(meta);
-    */
     document.head.appendChild(script);
 
     // Begin Interval
     this.setState({
       intervalId: setInterval(() => {
         this.pulse();
-      }, BEAT_INTERVAL_MILLIS)
+      }, APP_INTERVAL_MILLIS)
     });
   }
 
@@ -72,6 +69,7 @@ class App extends Component {
         this.setState({
           isSignedIn: this.auth2.isSignedIn.get(),
         });
+        this.pulse();
       });
     });
     window.gapi.load('signin2', function () {
@@ -161,32 +159,41 @@ class App extends Component {
             'maxResults': CALENDAR_FETCH_ROWS_MAX,
             'orderBy': 'startTime'
           }).then((response) => {
-            let events = response.result.items;
-            let i, displayEvents = [];
-
-            if (events.length > 0) {
-              for (i = 0; i < events.length; i++) {
-                let event = events[i];
-                let when = event.start.dateTime;
-                if (!when) {
-                  when = event.start.date;
-                }
-                displayEvents.push(<div className="event" key={event.id}>{event.summary} ({when})</div>);
-              }
-            } else {
-              displayEvents = [<div className="event">No upcoming events found.</div>];
-            }
-            this.setState({calendarEvents: displayEvents});
+            this.setState({calendarEvents: response.result.items});
           });
         });
       });
     });
   }
 
-  renderCalendarEvents() {
+  renderAgendaCalendar() {
+    if (this.state.isSignedIn) {
+      return (
+        <div id="agendar-calendar">
+          {this.state.calendarEvents.map(event => <Event event={event}/>)}
+        </div>
+      )
+    } else {
+      return (
+        <div id="agendar-calendar">
+          <h1>Agendar<sup className="tiny">&trade;</sup></h1>
+          <h2>Heads-Up Display<br/> for being on time.</h2>
+          <button className="space-above" id="login-button">Login with Google</button>
+          <div className="content space-above">
+            <Content name="privacy-promise"/>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  renderAgenda() {
     return (
-      <div>
-        {this.state.calendarEvents}
+      <div id="agendar">
+        <div id="agendar-clock">
+          <Clock/>
+        </div>
+        {this.renderAgendaCalendar()}
       </div>
     )
   }
@@ -253,35 +260,13 @@ class App extends Component {
     );
   }
 
-  renderApp() {
-    if (this.state.isSignedIn) {
-      return (
-        <header className="app-header">
-          <h6>Now</h6>
-          {this.renderCalendarEvents()}
-        </header>
-      )
-    } else {
-      return (
-        <header className="app-header">
-          <h1>Agendar<sup className="tiny">&trade;</sup></h1>
-          <h2>Heads-Up Display<br/> for being on time.</h2>
-          <button className="space-above" id="login-button">Login with Google</button>
-          <div className="content space-above">
-            <Content name="privacy-promise"/>
-          </div>
-        </header>
-      )
-    }
-  }
-
   render() {
     return (
-      <div className="app">
+      <div id="app">
         {this.renderFullscreenButton()}
         {this.renderMenuButton()}
         {this.renderMenuContent()}
-        {this.renderApp()}
+        {this.renderAgenda()}
       </div>
     );
   }

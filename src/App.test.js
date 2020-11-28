@@ -1,3 +1,5 @@
+// Copyleft 2020 Outright Mental
+
 import { render, screen } from '@testing-library/react';
 import App from './App';
 

@@ -1,32 +1,35 @@
+// Copyleft 2020 Outright Mental
+
+// knobs
 export const
+  SECOND = 1000/* MILLISECOND */,
+  MINUTE = 60 * SECOND,
+  HOUR = 60 * MINUTE,
+  DAY = 24 * HOUR,
+  APP_INTERVAL_MILLIS = 10 * SECOND,
+  CLOCK_INTERVAL_MILLIS = SECOND,
+  CACHE_INVALIDATE_MILLIS = 15 * MINUTE,
+  CALENDAR_FETCH_TO_FUTURE_MILLIS = DAY,
+  CALENDAR_FETCH_ROWS_MAX = 99,
+  WEEK_DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
+// secrets
+export const
   GOOGLE_API_KEY = readMetaTag('REACT_APP_GOOGLE_API_KEY'),
-
   GOOGLE_CLIENT_ID = readMetaTag('REACT_APP_GOOGLE_CLIENT_ID'),
-
+  GOOGLE_DISCOVERY_DOCS = [
+    "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"
+  ],
   GOOGLE_SCOPE = [
     "https://www.googleapis.com/auth/calendar.events.readonly",
     "https://www.googleapis.com/auth/calendar.readonly",
   ].join(" "),
-
-  GOOGLE_DISCOVERY_DOCS = [
-    "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"
-  ],
-
   GOOGLE_CLIENT_CONFIG = {
     apiKey: GOOGLE_API_KEY,
     clientId: GOOGLE_CLIENT_ID,
     discoveryDocs: GOOGLE_DISCOVERY_DOCS,
     scope: GOOGLE_SCOPE,
-  },
-
-  BEAT_INTERVAL_MILLIS = 1000, // once per second, like a clock
-
-  CACHE_INVALIDATE_MILLIS = 15 /* minutes */ * 60 * 1000,
-
-  CALENDAR_FETCH_TO_FUTURE_MILLIS = 24 /* hours */ * 60 * 60 * 1000,
-
-  CALENDAR_FETCH_ROWS_MAX = 99;
+  };
 
 function readMetaTag(name) {
   let el = document.head.querySelector(`[name=${name}][content]`);
