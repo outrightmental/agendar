@@ -2,34 +2,48 @@
 
 @import "palette";
 
-@media only screen and (min-width:$minimum-width-for-vertical-orientation) {
-  .time {
-    margin-bottom: 0;
-  }
-
-  .date {
-    margin-bottom: 0;
-  }
-}
-
 #clock {
   @include display_font;
 
   .time {
     letter-spacing: 0.05em;
-    font-size: 48pt;
+    font-size: 36pt;
     padding: 5px 0;
+    margin-bottom: 0;
+    @media only screen and (min-width: $screen-sm) {
+      font-size: 28pt;
+      margin-bottom: 0;
+    }
+    @media only screen and (min-width: $screen-md) {
+      font-size: 34pt;
+      margin-bottom: 0;
+    }
+    @media only screen and (min-width: $screen-lg) {
+      font-size: 48pt;
+    }
+    @media only screen and (min-width: $screen-xl) {
+      font-size: 60pt;
+    }
   }
 
   .date {
     letter-spacing: 0.1em;
-    font-size: 24px;
-  }
-
-  .text {
-    letter-spacing: 0.1em;
-    font-size: 12px;
-    padding: 20px 0 0;
+    font-size: 18pt;
+    margin-bottom: 0;
+    @media only screen and (min-width: $screen-sm) {
+      font-size: 12pt;
+      margin-bottom: 0;
+    }
+    @media only screen and (min-width: $screen-md) {
+      font-size: 16pt;
+      margin-bottom: 0;
+    }
+    @media only screen and (min-width: $screen-lg) {
+      font-size: 22pt;
+    }
+    @media only screen and (min-width: $screen-xl) {
+      font-size: 26pt;
+    }
   }
 }
 

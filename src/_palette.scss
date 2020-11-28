@@ -3,7 +3,12 @@
 $ui-z-index: 11000;
 $menu-backdrop-z-index: 9000;
 $menu-z-index: 9500;
-$minimum-width-for-vertical-orientation: 720px;
+
+$screen-xs: 420px; // maximum width: cover all smartphones in portrait mode
+$screen-sm: 421px; // to 767px width: most smartphones in landscape mode
+$screen-md: 768px; // to 1023px: most Android tablets and iPads in portrait mode
+$screen-lg: 1024px; // to 1365px: most Android tablets and iPads in landscape mode, older desktop/laptop monitors
+$screen-xl: 1366px; // and above: iPad PRO, HDready and FullHD desktop laptop monitors
 
 @mixin body_background() {
   background: #000000;
