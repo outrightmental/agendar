@@ -1,56 +1,55 @@
 // Copyleft 2020 Outright Mental
 
-import {
-  APP_INTERVAL_MILLIS,
-  CACHE_INVALIDATE_MILLIS
-} from "./config";
 import {Component} from "react";
+import './Clock.scss';
+import {
+  CLOCK_INTERVAL_MILLIS,
+  WEEK_DAYS
+} from "./_config";
 
 class Clock extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      isMenuOpen: false,
-      isFullscreen: false,
-      isSignedIn: false,
-      intervalId: null,
-      lastFetchedMillis: null,
-      calendarEvents: [],
+      date: "",
+      time: "",
     }
   }
 
   componentDidMount() {
-    // Begin Interval
     this.setState({
       intervalId: setInterval(() => {
         this.pulse();
-      }, APP_INTERVAL_MILLIS)
+      }, CLOCK_INTERVAL_MILLIS)
     });
+    this.pulse();
   }
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
   }
 
-  // Pulse happens every N milliseconds
   pulse() {
-    if (!this.state.isSignedIn) return;
-    let nowMillis = Date.now();
-    if (!this.state.lastFetchedMillis || this.state.lastFetchedMillis < nowMillis - CACHE_INVALIDATE_MILLIS) {
-      this.fetchCalendarEvents()
-      this.setState({lastFetchedMillis: nowMillis});
-    }
+    const d = new Date();
+    this.setState({
+      time: `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`,
+      date: `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${WEEK_DAYS[d.getDay()]}`,
+    })
   }
 
   render() {
     return (
       <div id="clock">
-        <p className="date">{date}</p>
-        <p className="time">{time}</p>
+        <p className="date">{this.state.date}</p>
+        <p className="time">{this.state.time}</p>
       </div>
     );
   }
+}
+
+function pad2(num) {
+  return num < 10 ? `0${num}` : `${num}`;
 }
 
 export default Clock;

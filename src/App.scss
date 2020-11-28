@@ -1,12 +1,39 @@
 // Copyleft 2020 Outright Mental
 
-.app {
-  text-align: center;
-  background: #000000;
+@import "palette";
+
+@media only screen and (min-width: 480px) {
+  .content {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 480px;
+  }
+  #agendar {
+    flex-direction: row !important;
+  }
 }
 
-.app-header {
-  min-height: 100vh;
+#app {
+  text-align: center;
+  @include display_font;
+}
+
+#agendar {
+  @include body_background;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 0;
+  padding: 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#agendar-calendar {
+  flex-basis: 62%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,8 +42,14 @@
   color: white;
 }
 
-.app-link {
-  color: #61dafb;
+#agendar-clock {
+  flex-basis: 38%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -61,14 +94,14 @@ sup.tiny {
 }
 
 #menu-button {
-  z-index: 11000;
+  z-index: $ui-z-index;
   top: 0;
   right: 0;
 }
 
 .menu-item {
   color: #ffffff;
-  background: #404040;
+  @include module_background;
   margin-bottom: 20px;
   padding: 20px 20px 10px 20px;
 }
@@ -84,6 +117,7 @@ sup.tiny {
 }
 
 #fullscreen-button {
+  z-index: $ui-z-index;
   bottom: 0;
   right: 0;
 }
@@ -94,7 +128,7 @@ sup.tiny {
 }
 
 #menu-backdrop {
-  z-index: 10000;
+  z-index: $menu-backdrop-z-index;
   position: absolute;
   display: block;
   top: 0;
@@ -107,7 +141,7 @@ sup.tiny {
 }
 
 #menu-body {
-  z-index: 11000;
+  z-index: $menu-z-index;
   margin: 50px 20px;
   display: flex;
   flex-direction: column;
@@ -120,15 +154,6 @@ sup.tiny {
 .content {
   font-family: monospace;
   font-size: 10pt;
-}
-
-@media only screen and (min-width: 480px) {
-  .content {
-    display: inline-block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 480px;
-  }
 }
 
 .space-above {
