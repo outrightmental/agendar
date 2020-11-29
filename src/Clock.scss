@@ -3,7 +3,7 @@
 @import "palette";
 
 #clock {
-  @include display_font;
+  @include display_font($clock-color);
 
   .time {
     letter-spacing: 0.05em;

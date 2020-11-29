@@ -4,7 +4,7 @@
 
 #app {
   text-align: center;
-  @include display_font;
+  @include display_font($app-color);
 }
 
 #agendar {
@@ -100,7 +100,7 @@ sup.tiny {
 
 .menu-item {
   color: #ffffff;
-  @include module_background;
+  @include module_background($menu-bg-color);
   margin-bottom: 20px;
   padding: 20px 20px 10px 20px;
 }
