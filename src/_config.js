@@ -19,7 +19,7 @@ export const
   EVENT_STANDBY_CLASS = "event-standby",
   EVENT_STANDBY_THRESHOLD = 5 * MINUTE,// yellow
   EVENT_READY_CLASS = "event-ready",
-  EVENT_READY_THRESHOLD = 2 * MINUTE,// flashing yellow
+  EVENT_READY_THRESHOLD = 1 * MINUTE,// flashing yellow
   EVENT_GO_CLASS = "event-go",
   EVENT_GO_THRESHOLD = 30 * SECOND; // green (until event end is past)
 
