@@ -150,7 +150,7 @@ sup.tiny {
   display: flex;
   height: 100%;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #menu-body a {
