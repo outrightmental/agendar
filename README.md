@@ -2,31 +2,21 @@
 
 # Agendar<sup>&trade;</sup>
 
-**[agendar.outright.io](https://agendar.outright.io)**
-
 **a Heads-Up Display for being on time.**
 
-Login with Google to display your Calendar events.
+![Agendar™ by Outright Mental™ is a Heads-Up Display for being on time](AgendarByOutrightMental.jpg)
 
-We <em>never</em> access your information!
+***COMPLETELY FREE TO USE!*** at **[agendar.outright.io](https://agendar.outright.io)** just login with Google to display your Calendar events.
+
+Authored by [Charney Kaye](https://charneykaye.com) with &#9829; to meet the heightened strangeness of working from the internet.
+
+Sponsored by [Outright Mental](https://outrightmental.com)<sup>&trade;</sup>
+
+[Privacy](https://privacy.outright.io) and [Terms](https://terms.outright.io) 
+
+## We <em>never</em> access your information!
 
 Your browser will connect directly to Google Calendar in order display upcoming events in a unique way.
-
-Authored with &#9829; by <a target="_blank"
-                                 rel="noreferrer"
-                                 href="https://charneykaye.com">Charney Kaye</a> to meet the heightened strangeness of working from the internet.
-
-Sponsored by <a target="_blank"
-                     rel="noreferrer"
-                     href="https://outrightmental.com">Outright Mental</a><sup>&trade;</sup>
-
-Here's the <a target="_blank"
-       rel="noreferrer"
-       href="https://privacy.outright.io">Privacy Policy</a> and <a target="_blank"
-       rel="noreferrer"
-       href="https://terms.outright.io">Terms & Conditions of Use</a>
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Environment
 
@@ -42,6 +32,8 @@ These environment variables are optional (used only in production)
 ```
 REACT_APP_GOOGLE_ANALYTICS_ID=G-123
 ```
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
