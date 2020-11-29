@@ -6,7 +6,7 @@
 
 ![Agendar™ by Outright Mental™ is a Heads-Up Display for being on time](AgendarByOutrightMental.jpg)
 
-***COMPLETELY FREE TO USE!*** at **[agendar.outright.io](https://agendar.outright.io)** just login with Google to display your Calendar events.
+It's ***COMPLETELY FREE TO USE*** at **[agendar.outright.io](https://agendar.outright.io)**&mdash; just login with Google to display your Calendar events.
 
 Authored by [Charney Kaye](https://charneykaye.com) with &#9829; to meet the heightened strangeness of working from the internet.
 
