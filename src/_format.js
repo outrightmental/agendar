@@ -1,6 +1,6 @@
 // Copyleft 2020 Outright Mental
 
-import {DAY, EVENT_GO_THRESHOLD, EVENT_NEAR_THRESHOLD, HOUR, MINUTE} from "./_config";
+import {DAY, EVENT_GO_THRESHOLD, HOUR, MINUTE} from "./_config";
 
 const
   WEEK_DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
