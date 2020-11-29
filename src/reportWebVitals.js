@@ -1,3 +1,5 @@
+// Copyright (C) 2020 Outright Mental
+
 const reportWebVitals = onPerfEntry => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
     import('web-vitals').then(({getCLS, getFID, getFCP, getLCP, getTTFB}) => {
