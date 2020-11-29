@@ -11,7 +11,8 @@ const Event = function (props) {
   let tMinusSeconds = Math.floor((date.getTime() - Date.now()) / 1000);
   return (
     <div className="agendar-event" key={event.id}>
-      <div className="time">{date.toString()} (T-{tMinusSeconds}s)</div>
+      <div className="date-time">{date.toString()}</div>
+      <div className="t-minus">{date.toString()} (T-{tMinusSeconds}s)</div>
       <div className="summary">{event.summary}</div>
     </div>
   );
