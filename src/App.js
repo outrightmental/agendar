@@ -1,5 +1,3 @@
-// Copyright (C) 2020 Outright Mental
-
 // Copyleft 2020 Outright Mental
 
 /* global gapi */

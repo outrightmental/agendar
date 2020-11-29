@@ -1,5 +1,3 @@
-// Copyright (C) 2020 Outright Mental
-
 // Copyleft 2020 Outright Mental
 
 import {DAY, EVENT_GO_THRESHOLD, HOUR, MINUTE} from "./_config";
