@@ -28,7 +28,7 @@
   flex-direction: column;
   font-size: calc(10px + 2vmin);
   color: white;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding-top: 1em;
   @media only screen and (min-width: $screen-sm) {
     padding-right: 1em;
