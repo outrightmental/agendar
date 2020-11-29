@@ -3,19 +3,62 @@
 @import "palette";
 
 .agendar-event {
-  @include display_font;
-  @include module_background;
-  display: block;
-
+  display: flex;
+  flex-direction: column;
   margin-bottom: 20px;
   padding: 10px 10px;
 
-  .summary {
-
+  &.event-far {
+    @include display_font($far-color);
+    @include module_background($far-bg-color);
   }
 
-  .time {
-    font-size: 11pt;
+  &.event-near {
+    @include display_font($near-color);
+    @include module_background($near-bg-color);
+  }
+
+  &.event-standby {
+    @include display_font($standby-color);
+    @include module_background($standby-bg-color);
+  }
+
+  &.event-ready {
+    @include display_font($ready-color);
+    background-image: url(images/rainbow-spin.gif);
+    background-size: cover;
+  }
+
+  &.event-go {
+    @include display_font($go-color);
+    @include module_background($go-bg-color);
+  }
+
+  .header {
+    display: flex;
+    flex-direction: row;
+
+    .date-time {
+      text-align: right;
+      font-size: 11pt;
+      flex-basis: 50%;
+    }
+
+    .t-minus {
+      text-align: left;
+      font-weight: 900;
+      font-size: 11pt;
+      flex-basis: 50%;
+    }
+  }
+
+  .info {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+
+    .summary {
+      text-align: center;
+    }
   }
 }
-

@@ -172,7 +172,7 @@ class App extends Component {
     if (this.state.isSignedIn) {
       return (
         <div id="agendar-calendar">
-          {this.state.calendarEvents.map(event => <Event event={event}/>)}
+          {this.state.calendarEvents.map(event => <Event key={event.id} event={event}/>)}
         </div>
       )
     } else {

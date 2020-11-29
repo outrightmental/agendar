@@ -6,12 +6,22 @@ export const
   MINUTE = 60 * SECOND,
   HOUR = 60 * MINUTE,
   DAY = 24 * HOUR,
-  APP_INTERVAL_MILLIS = 10 * SECOND,
+  APP_INTERVAL_MILLIS = 5 * SECOND,
   CLOCK_INTERVAL_MILLIS = SECOND,
   CACHE_INVALIDATE_MILLIS = 15 * MINUTE,
   CALENDAR_FETCH_TO_FUTURE_MILLIS = DAY,
-  CALENDAR_FETCH_ROWS_MAX = 99,
-  WEEK_DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  CALENDAR_FETCH_ROWS_MAX = 99;
+
+export const
+  EVENT_FAR_CLASS = "event-far",
+  EVENT_NEAR_CLASS = "event-near",
+  EVENT_NEAR_THRESHOLD = 15 * MINUTE, // brighter gray
+  EVENT_STANDBY_CLASS = "event-standby",
+  EVENT_STANDBY_THRESHOLD = 5 * MINUTE,// yellow
+  EVENT_READY_CLASS = "event-ready",
+  EVENT_READY_THRESHOLD = 2 * MINUTE,// flashing yellow
+  EVENT_GO_CLASS = "event-go",
+  EVENT_GO_THRESHOLD = 30 * SECOND; // green (until event end is past)
 
 // secrets
 export const

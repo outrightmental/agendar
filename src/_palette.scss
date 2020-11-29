@@ -10,21 +10,41 @@ $screen-md: 768px; // to 1023px: most Android tablets and iPads in portrait mode
 $screen-lg: 1024px; // to 1365px: most Android tablets and iPads in landscape mode, older desktop/laptop monitors
 $screen-xl: 1366px; // and above: iPad PRO, HDready and FullHD desktop laptop monitors
 
+$dark-purple: #424;
+$purple: #636;
+$bright-yellow: #ff992b;
+$bright-green: #2bff72;
+
+
+$app-color: #cccccc;
+$clock-color: #cccccc;
+$menu-color: #cccccc;
+$menu-bg-color: #666666;
+$far-color: #cccccc;
+$far-bg-color: #666666;
+$near-color: #ffffff;
+$near-bg-color: #999999;
+$standby-color: $bright-yellow;
+$standby-bg-color: darken($bright-yellow, 25%);
+$ready-color: #ffffff;
+$ready-bg-color: darken($bright-yellow, 25%);
+$go-color: $bright-green;
+$go-bg-color: darken($bright-green, 25%);
+
 @mixin body_background() {
   background: #000000;
   background: radial-gradient(ellipse at center, #202020 0%, #000000 200%);
   background-size: 100%;
 }
 
-@mixin module_background() {
-  //background: #66666600;
-  background: radial-gradient(ellipse at center, #66666670 10%, #66666640 200%);
+@mixin module_background($base-color) {
+  background: radial-gradient(ellipse at center, rgba($base-color, 0.45) 10%, rgba($base-color, 0.25) 200%);
   background-size: 100%;
 }
 
-@mixin display_font() {
+@mixin display_font($base-color) {
   font-family: 'Share Tech Mono', monospace;
   text-align: center;
-  color: #ffffff;
-  text-shadow: 0 0 14px #999, 0 0 20px rgba(175, 175, 175, 0);
+  color: $base-color;
+  text-shadow: 0 0 14px darken(#999, 20%), 0 0 20px rgba(darken(#999, 20%), 0);
 }
