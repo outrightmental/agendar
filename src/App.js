@@ -178,7 +178,9 @@ class App extends Component {
     } else {
       return (
         <div id="agendar-calendar">
-          <Content name="hero"/>
+          <div className="hero">
+            <Content name="hero"/>
+          </div>
           <button className="space-above" id="login-button">Login with Google</button>
           <div className="content space-above">
             <Content name="privacy-promise"/>
