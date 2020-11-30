@@ -31,6 +31,10 @@ $ready-bg-color: darken($bright-yellow, 25%);
 $go-color: $bright-green;
 $go-bg-color: darken($bright-green, 25%);
 
+body {
+  background: #000000;
+}  
+
 @mixin body_background() {
   background: #000000;
   background: radial-gradient(ellipse at center, #202020 0%, #000000 200%);

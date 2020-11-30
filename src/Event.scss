@@ -37,6 +37,7 @@
   .header {
     display: flex;
     flex-direction: row;
+    margin-bottom: 0.38rem;
 
     .date-time {
       text-align: right;
@@ -56,6 +57,7 @@
     display: flex;
     flex-direction: row;
     align-content: center;
+    margin-bottom: 0.38rem;
 
     .summary {
       text-align: center;
