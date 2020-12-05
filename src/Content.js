@@ -1,4 +1,4 @@
-// Copyleft 2020 Outright Mental
+// Copyright (C) 2020 Outright Mental
 
 import React from "react";
 
