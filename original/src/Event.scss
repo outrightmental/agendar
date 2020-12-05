@@ -25,7 +25,7 @@
 
   &.event-ready {
     @include display_font($ready-color);
-    background-image: url(images/rainbow-spin.gif);
+    background-image: url(src/images/rainbow-spin.gif);
     background-size: cover;
   }
 
