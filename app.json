@@ -1,0 +1,12 @@
+{
+  "name": "agendar",
+  "displayName": "Star Harvester: The Way to Centauri",
+  "expo": {
+    "name": "agendar",
+    "slug": "agendar",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
