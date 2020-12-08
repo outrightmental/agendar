@@ -1,11 +1,14 @@
 name: "pull request"
 
 on:
+  push:
+    branches:
+      - main
   pull_request
 
 jobs:
-  ReactJS:
-    name: ReactJS
+  React:
+    name: React
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,8 +39,4 @@ jobs:
         run: npm install
 
       - name: Build page
-        run: npm run build
-        env:
-          REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
-          REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
-          REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
+        run: npm test

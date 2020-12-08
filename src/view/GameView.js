@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
     p: {
         fontSize: 20,
-        fontWeight: 900,
+        fontWeight: "900",
         color: '#fff',
     },
     h1: {
