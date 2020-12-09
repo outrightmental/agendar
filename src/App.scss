@@ -132,6 +132,11 @@ sup.tiny {
   font-size: 10pt;
 }
 
+.status {
+  font-family: monospace;
+  font-size: 10pt;
+}
+
 #menu-backdrop {
   z-index: $menu-backdrop-z-index;
   position: absolute;

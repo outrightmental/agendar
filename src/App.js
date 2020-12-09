@@ -10,6 +10,11 @@ import {
   CALENDAR_FETCH_TO_FUTURE_MILLIS,
   EVENT_DESCRIPTION_AUTO_CREATED_GOAL,
   GOOGLE_CLIENT_CONFIG,
+  MESSAGE_EMPTY,
+  MESSAGE_FOUND_NO_EVENTS,
+  MESSAGE_INITIALIZING,
+  MESSAGE_LOADING_CALENDARS,
+  MESSAGE_LOADING_EVENTS, MESSAGE_STANDBY,
 } from "./_config";
 import Content from "./Content";
 import Event from "./Event";
@@ -20,6 +25,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      statusMessage: MESSAGE_EMPTY,
       isMenuOpen: false,
       isFullscreen: false,
       isSignedIn: false,
@@ -90,6 +96,7 @@ class App extends Component {
   }
 
   onSuccess() {
+    this.setState({statusMessage: MESSAGE_STANDBY});
     this.setState({
       isSignedIn: true,
     })
@@ -145,15 +152,17 @@ class App extends Component {
   }
 
   fetchCalendars() {
+    this.setState({statusMessage: MESSAGE_INITIALIZING});
     window.gapi.load('client', () => {
       gapi.client.init(GOOGLE_CLIENT_CONFIG).then(() => {
-        console.debug("Will fetch calendar list");
+        this.setState({statusMessage: MESSAGE_LOADING_CALENDARS});
         gapi.client.load('calendar', 'v3', () => {
           gapi.client.calendar.calendarList.list({
             'maxResults': CALENDAR_FETCH_ROWS_MAX,
             'orderBy': 'startTime'
           }).then((response) => {
             let promises = [];
+            this.setState({statusMessage: MESSAGE_LOADING_EVENTS});
             response.result.items.forEach(item => {
               let calendarId = item.id;
               promises.push(new Promise((resolve, reject) => {
@@ -179,6 +188,7 @@ class App extends Component {
               let calendars = {};
               allCalendars.forEach(c => Object.assign(calendars, c));
               this.setState({calendars});
+              this.setState({statusMessage: MESSAGE_EMPTY});
             });
           });
         });
@@ -208,11 +218,21 @@ class App extends Component {
     });
   }
 
+  renderAgendaCalendarEvents() {
+    const events = this.getAllEvents();
+    if (0 < events.length)
+      return events.map(event => <Event key={event.id} event={event}/>);
+    return <p className="status">{MESSAGE_FOUND_NO_EVENTS}</p>
+  }
+
   renderAgendaCalendar() {
     if (this.state.isSignedIn) {
       return (
         <div id="agendar-calendar">
-          {this.getAllEvents().map(event => <Event key={event.id} event={event}/>)}
+          {!!this.state.statusMessage ?
+            <p className="status">{this.state.statusMessage}</p> :
+            this.renderAgendaCalendarEvents()
+          }
         </div>
       )
     } else {

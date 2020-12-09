@@ -25,7 +25,17 @@ export const
   EVENT_GO_THRESHOLD = 0; // green (until event end is past)
 
 // event filter
-export const EVENT_DESCRIPTION_AUTO_CREATED_GOAL = "This event was added from Goals in Google Calendar.";
+export const
+  EVENT_DESCRIPTION_AUTO_CREATED_GOAL = "This event was added from Goals in Google Calendar.";
+
+// message language
+export const
+  MESSAGE_EMPTY = null,
+  MESSAGE_STANDBY = "Standby…",
+  MESSAGE_INITIALIZING = "Initializing…",
+  MESSAGE_LOADING_CALENDARS = "Loadings Calendars…",
+  MESSAGE_LOADING_EVENTS = "Loading Events from Calendars…",
+  MESSAGE_FOUND_NO_EVENTS = "Found no upcoming events.";
 
 // secrets
 export const
