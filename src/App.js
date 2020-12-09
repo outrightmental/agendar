@@ -8,6 +8,7 @@ import {
   CACHE_INVALIDATE_MILLIS,
   CALENDAR_FETCH_ROWS_MAX,
   CALENDAR_FETCH_TO_FUTURE_MILLIS,
+  EVENT_DESCRIPTION_AUTO_CREATED_GOAL,
   GOOGLE_CLIENT_CONFIG,
 } from "./_config";
 import Content from "./Content";
@@ -170,7 +171,7 @@ class App extends Component {
                     const calendars = {};
                     calendars[calendarId] = response.result.items;
                     resolve(calendars);
-                  });
+                  }, reject);
                 });
               }));
             });
@@ -191,6 +192,7 @@ class App extends Component {
       if (this.state.calendars.hasOwnProperty(calendarId))
         this.state.calendars[calendarId]
           .filter(event => !!event.start.dateTime)
+          .filter(event => (!event.description || !event.description.includes(EVENT_DESCRIPTION_AUTO_CREATED_GOAL)))
           .forEach(event => events.push(event));
 
     return events.sort(function (e1, e2) {
