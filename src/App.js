@@ -24,7 +24,8 @@ class App extends Component {
       isSignedIn: false,
       intervalId: null,
       lastFetchedMillis: null,
-      calendarEvents: [],
+      calendarList: [],
+      events: [],
     }
   }
 
@@ -55,10 +56,10 @@ class App extends Component {
     if (!this.state.isSignedIn) return;
     let nowMillis = Date.now();
     if (!this.state.lastFetchedMillis || this.state.lastFetchedMillis < nowMillis - CACHE_INVALIDATE_MILLIS) {
-      this.fetchCalendarEvents()
+      this.fetchCalendars()
       this.setState({lastFetchedMillis: nowMillis});
     } else {
-      this.setState({calendarEvents: this.state.calendarEvents});
+      this.setState({calendars: this.state.calendars});
     }
   }
 
@@ -142,29 +143,68 @@ class App extends Component {
     else alert("Fullscreen mode not supported in your browser!");
   }
 
-  fetchCalendarEvents() {
-    // let today = new Date(); //today date
-    // let userEmail = "xxx";
-    // let userTimeZone = "xxx";
-
-    console.info("Will initialize client");
+  fetchCalendars() {
     window.gapi.load('client', () => {
       gapi.client.init(GOOGLE_CLIENT_CONFIG).then(() => {
-        console.info("Will fetch calendar events");
+        console.debug("Will fetch calendar list");
         gapi.client.load('calendar', 'v3', () => {
-          gapi.client.calendar.events.list({
-            'calendarId': 'primary',
-            'timeMin': (new Date()).toISOString(),
-            'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
-            'showDeleted': false,
-            'singleEvents': true,
+          gapi.client.calendar.calendarList.list({
             'maxResults': CALENDAR_FETCH_ROWS_MAX,
             'orderBy': 'startTime'
           }).then((response) => {
-            this.setState({calendarEvents: response.result.items});
+            let promises = [];
+            response.result.items.forEach(item => {
+              let calendarId = item.id;
+              promises.push(new Promise((resolve, reject) => {
+                console.debug("Will fetch events from calendar ID:", calendarId);
+                gapi.client.load('calendar', 'v3', () => {
+                  gapi.client.calendar.events.list({
+                    'calendarId': calendarId,
+                    'timeMin': (new Date()).toISOString(),
+                    'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
+                    'showDeleted': false,
+                    'singleEvents': true,
+                    'maxResults': CALENDAR_FETCH_ROWS_MAX,
+                    'orderBy': 'startTime'
+                  }).then((response) => {
+                    const calendars = {};
+                    calendars[calendarId] = response.result.items;
+                    resolve(calendars);
+                  });
+                });
+              }));
+            });
+            Promise.all(promises).then((allCalendars) => {
+              let calendars = {};
+              allCalendars.forEach(c => Object.assign(calendars, c));
+              this.setState({calendars});
+            });
           });
         });
       });
+    });
+  }
+
+  getAllEvents() {
+    let events = [];
+    for (let calendarId in this.state.calendars)
+      if (this.state.calendars.hasOwnProperty(calendarId)) {
+        this.state.calendars[calendarId].forEach(event => events.push(event));
+      }
+    return events.sort(function (e1, e2) {
+      const t1 = e1.start.dateTime ?
+        new Date(e1.start.dateTime) :
+        new Date(e1.start.date);
+      const t2 = e2.start.dateTime ?
+        new Date(e2.start.dateTime) :
+        new Date(e2.start.date);
+      if (t1 < t2) {
+        return -1;
+      }
+      if (t1 > t2) {
+        return 1;
+      }
+      return 0;
     });
   }
 
@@ -172,7 +212,7 @@ class App extends Component {
     if (this.state.isSignedIn) {
       return (
         <div id="agendar-calendar">
-          {this.state.calendarEvents.map(event => <Event key={event.id} event={event}/>)}
+          {this.getAllEvents().map(event => <Event key={event.id} event={event}/>)}
         </div>
       )
     } else {
