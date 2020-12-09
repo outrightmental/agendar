@@ -188,16 +188,14 @@ class App extends Component {
   getAllEvents() {
     let events = [];
     for (let calendarId in this.state.calendars)
-      if (this.state.calendars.hasOwnProperty(calendarId)) {
-        this.state.calendars[calendarId].forEach(event => events.push(event));
-      }
+      if (this.state.calendars.hasOwnProperty(calendarId))
+        this.state.calendars[calendarId]
+          .filter(event => !!event.start.dateTime)
+          .forEach(event => events.push(event));
+
     return events.sort(function (e1, e2) {
-      const t1 = e1.start.dateTime ?
-        new Date(e1.start.dateTime) :
-        new Date(e1.start.date);
-      const t2 = e2.start.dateTime ?
-        new Date(e2.start.dateTime) :
-        new Date(e2.start.date);
+      const t1 = new Date(e1.start.dateTime);
+      const t2 = new Date(e2.start.dateTime);
       if (t1 < t2) {
         return -1;
       }
