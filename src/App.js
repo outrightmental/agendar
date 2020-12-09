@@ -1,125 +1,55 @@
 // Copyright (C) 2020 Outright Mental
 
-/* global gapi */
-import React, {Component} from 'react';
+import React from 'react';
 import './App.scss';
-import {
-  APP_INTERVAL_MILLIS,
-  CACHE_INVALIDATE_MILLIS,
-  CALENDAR_FETCH_ROWS_MAX,
-  CALENDAR_FETCH_TO_FUTURE_MILLIS,
-  GOOGLE_CLIENT_CONFIG,
-} from "./_config";
 import Content from "./Content";
 import Event from "./Event";
 import Clock from "./Clock";
 
-class App extends Component {
+// vendor
+import {Provider, useDispatch, useSelector} from "react-redux";
+// app
+import store from "./engine";
+import {
+  doFullscreenClosed,
+  doFullscreenOpened,
+  doSignIn,
+  doSignOut,
+  doToggleMenu,
+  selectIsFullscreen,
+  selectIsSignedIn
+} from "./engine/CalendarEventEngine";
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isMenuOpen: false,
-      isFullscreen: false,
-      isSignedIn: false,
-      intervalId: null,
-      lastFetchedMillis: null,
-      calendars: {},
-    }
-  }
 
-  componentDidMount() {
-    const script = document.createElement("script");
-    script.src = "https://apis.google.com/js/platform.js";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      this.didLoadGoogleApi();
-    };
-    document.head.appendChild(script);
+function App(/*props*/) {
 
-    // Begin Interval
-    this.setState({
-      intervalId: setInterval(() => {
-        this.pulse();
-      }, APP_INTERVAL_MILLIS)
-    });
-  }
+  const
+    dispatch = useDispatch();
 
-  componentWillUnmount() {
-    clearInterval(this.state.intervalId);
-  }
+  const
+    isFullscreenSelector = selectIsFullscreen(),
+    isFullscreen = useSelector(state => isFullscreenSelector(state));
 
-  // Pulse happens every N milliseconds
-  pulse() {
-    if (!this.state.isSignedIn) return;
-    let nowMillis = Date.now();
-    if (!this.state.lastFetchedMillis || this.state.lastFetchedMillis < nowMillis - CACHE_INVALIDATE_MILLIS) {
-      this.fetchCalendars()
-      this.setState({lastFetchedMillis: nowMillis});
-    } else {
-      this.setState({calendars: this.state.calendars});
-    }
-  }
+  const
+    isSignedInSelector = selectIsSignedIn(),
+    isSignedIn = useSelector(state => isSignedInSelector(state));
 
-  didLoadGoogleApi() {
-    const successCallback = this.onSuccess.bind(this);
+  const
+    calendarEventsSelector = selectCalendarEvents(),
+    calendarEvents = useSelector(state => calendarEventsSelector(state));
 
-    window.gapi.load('auth2', () => {
-      this.auth2 = gapi.auth2.init(GOOGLE_CLIENT_CONFIG)
-      this.auth2.then(() => {
-        this.setState({
-          isSignedIn: this.auth2.isSignedIn.get(),
-        });
-        this.pulse();
-      });
-    });
-    window.gapi.load('signin2', function () {
-      // Method 3: render a sign in button
-      // using this method will show Signed In if the user is already signed in
-      const opts = {
-        ...GOOGLE_CLIENT_CONFIG,
-        width: 200,
-        height: 50,
-        onsuccess: successCallback
-      };
-      gapi.signin2.render('login-button', opts)
-    })
-  }
+  const
+    signIn = () => dispatch(doSignIn()),
+    signOut = () => dispatch(doSignOut()),
+    fullscreenOpened = () => dispatch(doFullscreenOpened()),
+    fullscreenClosed = () => dispatch(doFullscreenClosed()),
+    toggleMenu = () => dispatch(doToggleMenu());
 
-  onSuccess() {
-    this.setState({
-      isSignedIn: true,
-    })
-  }
-
-  doLogout() {
-    this.auth2.signOut().then(
-      () => {
-        this.setState({
-          isSignedIn: false,
-          lastFetchedMillis: null,
-        })
-        window.location.reload(false);
-      },
-      () => {
-        alert("Failed to sign out!");
-      }
-    );
-  }
-
-  doMenuButtonClicked() {
-    if (this.state.isMenuOpen)
-      this.setState({isMenuOpen: false});
-    else
-      this.setState({isMenuOpen: true});
-  }
-
-  doOpenFullscreen() {
+  const fullscreenOpen = function () {
     if (document.documentElement.requestFullscreen)
       document.documentElement.requestFullscreen().then(
         () => {
-          this.setState({isFullscreen: true})
+          fullscreenOpened();
         },
         () => {
           alert("Failed to open in fullscreen mode!");
@@ -128,125 +58,129 @@ class App extends Component {
     else alert("Fullscreen mode not supported in your browser!");
   }
 
-  doCloseFullscreen() {
+  const fullscreenClose = function () {
     if (document.exitFullscreen)
       document.exitFullscreen().then(
         () => {
-          this.setState({isFullscreen: false});
+          fullscreenClosed();
         },
         () => {
           // quietly assume that we have failed to detect somehow that fullscreen was already exited
-          this.setState({isFullscreen: false});
+          fullscreenClosed();
         }
       );
     else alert("Fullscreen mode not supported in your browser!");
   }
 
-  fetchCalendars() {
-    // let today = new Date(); //today date
-    // let userEmail = "xxx";
-    // let userTimeZone = "xxx";
+  /*
 
-    console.info("Will initialize client");
-    window.gapi.load('client', () => {
-      gapi.client.init(GOOGLE_CLIENT_CONFIG).then(() => {
+    didLoadGoogleApi() {
+      const successCallback = this.onSuccess.bind(this);
 
-        console.info("Will fetch calendar list");
-        gapi.client.load('calendar', 'v3', () => {
-          gapi.client.calendar.calendarList.list({
-            'maxResults': CALENDAR_FETCH_ROWS_MAX,
-            'orderBy': 'startTime'
-          }).then((response) => {
-            response.result.items.forEach(item => {
-              let calendarId = item.id;
-              console.info("Will fetch events from calendar ID:", calendarId);
-              gapi.client.load('calendar', 'v3', () => {
-                gapi.client.calendar.events.list({
-                  'calendarId': calendarId,
-                  'timeMin': (new Date()).toISOString(),
-                  'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
-                  'showDeleted': false,
-                  'singleEvents': true,
-                  'maxResults': CALENDAR_FETCH_ROWS_MAX,
-                  'orderBy': 'startTime'
-                }).then((response) => {
-                  let calendars = Object.assign({}, this.state.calendars);
-                  console.error("BEFORE", this.state.calendars);
-                  calendars[calendarId] = response.result.items;
-                  console.warn("FUCK" ,calendars);
-                  this.setState({calendars});
-                });
-              });
-            })
+      window.gapi.load('auth2', () => {
+        this.auth2 = gapi.auth2.init(GOOGLE_CLIENT_CONFIG)
+        this.auth2.then(() => {
+          this.setState({
+            isSignedIn: this.auth2.isSignedIn.get(),
           });
+          this.pulse();
         });
       });
-    });
-  }
-
-  getAllEvents() {
-    let events = [];
-    console.log("this.state.calendars", events);
-    for (let calendarId in this.state.calendars)
-      if (this.state.calendars.hasOwnProperty(calendarId)) {
-        console.log("PRE-SET", events);
-        events.push(this.state.calendars[calendarId]);
-      }
-    console.log("PRE-SET", events);
-    return events.sort(function (e1, e2) {
-      const t1 = e1.start.dateTime ?
-        new Date(e1.start.dateTime) :
-        new Date(e1.start.date);
-      const t2 = e2.start.dateTime ?
-        new Date(e2.start.dateTime) :
-        new Date(e2.start.date);
-      if (t1 < t2) {
-        return -1;
-      }
-      if (t1 > t2) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
-  renderAgendaCalendar() {
-    if (this.state.isSignedIn) {
-      return (
-        <div id="agendar-calendar">
-          {this.getAllEvents().map(event => <Event key={event.id} event={event}/>)}
-        </div>
-      )
-    } else {
-      return (
-        <div id="agendar-calendar">
-          <div className="hero">
-            <Content name="hero"/>
-          </div>
-          <button className="space-above" id="login-button">Login with Google</button>
-          <div className="content space-above">
-            <Content name="privacy-promise"/>
-          </div>
-        </div>
-      )
+      window.gapi.load('signin2', function () {
+        // Method 3: render a sign in button
+        // using this method will show Signed In if the user is already signed in
+        const opts = {
+          ...GOOGLE_CLIENT_CONFIG,
+          width: 200,
+          height: 50,
+          onsuccess: successCallback
+        };
+        gapi.signin2.render('login-button', opts)
+      })
     }
-  }
 
-  renderAgenda() {
-    return (
+    onSuccess() {
+      this.setState({
+        isSignedIn: true,
+      })
+    }
+
+    doLogout() {
+      this.auth2.signOut().then(
+        () => {
+          this.setState({
+            isSignedIn: false,
+            lastFetchedMillis: null,
+          })
+          window.location.reload(false);
+        },
+        () => {
+          alert("Failed to sign out!");
+        }
+      );
+    }
+
+
+    getAllEvents() {
+      let events = [];
+      console.log("this.state.calendars", events);
+      for (let calendarId in this.state.calendars)
+        if (this.state.calendars.hasOwnProperty(calendarId)) {
+          console.log("PRE-SET", events);
+          events.push(this.state.calendars[calendarId]);
+        }
+      console.log("PRE-SET", events);
+      return events.sort(function (e1, e2) {
+        const t1 = e1.start.dateTime ?
+          new Date(e1.start.dateTime) :
+          new Date(e1.start.date);
+        const t2 = e2.start.dateTime ?
+          new Date(e2.start.dateTime) :
+          new Date(e2.start.date);
+        if (t1 < t2) {
+          return -1;
+        }
+        if (t1 > t2) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+  */
+
+  const renderAgendaCalendar = isSignedIn ?
+    (
+      <div id="agendar-calendar">
+        {calendarEvents.map(event => <Event key={event.id} event={event}/>)}
+      </div>
+    )
+    :
+    (
+      <div id="agendar-calendar">
+        <div className="hero">
+          <Content name="hero"/>
+        </div>
+        <button className="space-above" id="login-button">Login with Google</button>
+        <div className="content space-above">
+          <Content name="privacy-promise"/>
+        </div>
+      </div>
+    );
+
+  const renderAgenda =
+    (
       <div id="agendar">
         <div id="agendar-clock">
           <Clock/>
         </div>
-        {this.renderAgendaCalendar()}
+        {renderAgendaCalendar}
       </div>
-    )
-  }
+    );
 
-  renderMenuButton() {
+  function renderMenuButton() {
     return (
       <div className={`ui-button ${this.state.isMenuOpen ? 'lit' : ''}`}
-           id="menu-button" onClick={() => this.doMenuButtonClicked()}>
+           id="menu-button" onClick={toggleMenu}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
           <title>
             Menu
@@ -258,9 +192,9 @@ class App extends Component {
     );
   }
 
-  renderMenuContent() {
+  function renderMenuContent() {
     if (this.state.isMenuOpen) return (
-      <div id="menu-backdrop" onClick={() => this.doMenuButtonClicked()}>
+      <div id="menu-backdrop" onClick={toggleMenu}>
         <div id="menu-body">
           <div className="menu-item">
             <div className="content">
@@ -272,7 +206,7 @@ class App extends Component {
           </div>
           {
             this.state.isSignedIn ?
-              <div className="menu-item menu-selection" onClick={() => this.doLogout()}>Logout</div> : ''
+              <div className="menu-item menu-selection" onClick={signOut}>Logout</div> : ''
           }
         </div>
       </div>
@@ -280,9 +214,9 @@ class App extends Component {
     else return "";
   }
 
-  renderFullscreenButton() {
-    if (this.state.isFullscreen) return (
-      <div className="ui-button" id="fullscreen-button" onClick={() => this.doCloseFullscreen()}>
+  const renderFullscreenButton = isFullscreen ?
+    (
+      <div className="ui-button" id="fullscreen-button" onClick={fullscreenClose}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
           <title>
             Exit Fullscreen Mode
@@ -291,9 +225,10 @@ class App extends Component {
                 d="M7 7V1H5v4H1v2h6zM5 19h2v-6H1v2h4v4zm10-4h4v-2h-6v6h2v-4zm0-8h4V5h-4V1h-2v6h2z"/>
         </svg>
       </div>
-    );
-    else return (
-      <div className="ui-button" id="fullscreen-button" onClick={() => this.doOpenFullscreen()}>
+    )
+    :
+    (
+      <div className="ui-button" id="fullscreen-button" onClick={fullscreenOpen}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
           <title>
             Enter Fullscreen Mode
@@ -303,18 +238,17 @@ class App extends Component {
         </svg>
       </div>
     );
-  }
 
-  render() {
-    return (
+  return (
+    <Provider store={store}>
       <div id="app">
-        {this.renderFullscreenButton()}
-        {this.renderMenuButton()}
-        {this.renderMenuContent()}
-        {this.renderAgenda()}
+        {renderFullscreenButton}
+        {renderMenuButton}
+        {renderMenuContent}
+        {renderAgenda}
       </div>
-    );
-  }
+    </Provider>
+  );
 }
 
 export default App;
