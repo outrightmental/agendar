@@ -15,13 +15,13 @@ export const
 export const
   EVENT_FAR_CLASS = "event-far",
   EVENT_NEAR_CLASS = "event-near",
-  EVENT_NEAR_THRESHOLD = 20 * MINUTE, // brighter gray
+  EVENT_NEAR_THRESHOLD = 60 * MINUTE, // brighter gray
   EVENT_STANDBY_CLASS = "event-standby",
-  EVENT_STANDBY_THRESHOLD = 5 * MINUTE,// yellow
+  EVENT_STANDBY_THRESHOLD = 10 * MINUTE, // yellow
   EVENT_READY_CLASS = "event-ready",
-  EVENT_READY_THRESHOLD = 1 * MINUTE,// flashing yellow
+  EVENT_READY_THRESHOLD = 60 * SECOND, // animated rainbow
   EVENT_GO_CLASS = "event-go",
-  EVENT_GO_THRESHOLD = 30 * SECOND; // green (until event end is past)
+  EVENT_GO_THRESHOLD = 0; // green (until event end is past)
 
 // secrets
 export const
