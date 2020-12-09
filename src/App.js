@@ -24,7 +24,8 @@ class App extends Component {
       isSignedIn: false,
       intervalId: null,
       lastFetchedMillis: null,
-      calendars: {},
+      calendarList: [],
+      events: [],
     }
   }
 
@@ -143,41 +144,41 @@ class App extends Component {
   }
 
   fetchCalendars() {
-    // let today = new Date(); //today date
-    // let userEmail = "xxx";
-    // let userTimeZone = "xxx";
-
-    console.info("Will initialize client");
     window.gapi.load('client', () => {
       gapi.client.init(GOOGLE_CLIENT_CONFIG).then(() => {
-
-        console.info("Will fetch calendar list");
+        console.debug("Will fetch calendar list");
         gapi.client.load('calendar', 'v3', () => {
           gapi.client.calendar.calendarList.list({
             'maxResults': CALENDAR_FETCH_ROWS_MAX,
             'orderBy': 'startTime'
           }).then((response) => {
+            let promises = [];
             response.result.items.forEach(item => {
               let calendarId = item.id;
-              console.info("Will fetch events from calendar ID:", calendarId);
-              gapi.client.load('calendar', 'v3', () => {
-                gapi.client.calendar.events.list({
-                  'calendarId': calendarId,
-                  'timeMin': (new Date()).toISOString(),
-                  'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
-                  'showDeleted': false,
-                  'singleEvents': true,
-                  'maxResults': CALENDAR_FETCH_ROWS_MAX,
-                  'orderBy': 'startTime'
-                }).then((response) => {
-                  let calendars = Object.assign({}, this.state.calendars);
-                  console.error("BEFORE", this.state.calendars);
-                  calendars[calendarId] = response.result.items;
-                  console.warn("FUCK" ,calendars);
-                  this.setState({calendars});
+              promises.push(new Promise((resolve, reject) => {
+                console.debug("Will fetch events from calendar ID:", calendarId);
+                gapi.client.load('calendar', 'v3', () => {
+                  gapi.client.calendar.events.list({
+                    'calendarId': calendarId,
+                    'timeMin': (new Date()).toISOString(),
+                    'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
+                    'showDeleted': false,
+                    'singleEvents': true,
+                    'maxResults': CALENDAR_FETCH_ROWS_MAX,
+                    'orderBy': 'startTime'
+                  }).then((response) => {
+                    const calendars = {};
+                    calendars[calendarId] = response.result.items;
+                    resolve(calendars);
+                  });
                 });
-              });
-            })
+              }));
+            });
+            Promise.all(promises).then((allCalendars) => {
+              let calendars = {};
+              allCalendars.forEach(c => Object.assign(calendars, c));
+              this.setState({calendars});
+            });
           });
         });
       });
@@ -186,13 +187,10 @@ class App extends Component {
 
   getAllEvents() {
     let events = [];
-    console.log("this.state.calendars", events);
     for (let calendarId in this.state.calendars)
       if (this.state.calendars.hasOwnProperty(calendarId)) {
-        console.log("PRE-SET", events);
-        events.push(this.state.calendars[calendarId]);
+        this.state.calendars[calendarId].forEach(event => events.push(event));
       }
-    console.log("PRE-SET", events);
     return events.sort(function (e1, e2) {
       const t1 = e1.start.dateTime ?
         new Date(e1.start.dateTime) :
