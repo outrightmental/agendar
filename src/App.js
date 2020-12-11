@@ -14,7 +14,8 @@ import {
   MESSAGE_FOUND_NO_EVENTS,
   MESSAGE_INITIALIZING,
   MESSAGE_LOADING_CALENDARS,
-  MESSAGE_LOADING_EVENTS, MESSAGE_STANDBY,
+  MESSAGE_LOADING_EVENTS,
+  MESSAGE_STANDBY,
 } from "./_config";
 import Content from "./Content";
 import Event from "./Event";
@@ -26,12 +27,14 @@ class App extends Component {
     super(props);
     this.state = {
       statusMessage: MESSAGE_EMPTY,
+      alertMessage: MESSAGE_EMPTY,
       isMenuOpen: false,
       isFullscreen: false,
       isSignedIn: false,
       intervalId: null,
       lastFetchedMillis: null,
       calendarList: [],
+      calendars: {},
       events: [],
     }
   }
@@ -66,7 +69,7 @@ class App extends Component {
       this.fetchCalendars()
       this.setState({lastFetchedMillis: nowMillis});
     } else {
-      this.setState({calendars: this.state.calendars});
+      this.setState({events: this.state.events});
     }
   }
 
@@ -96,7 +99,10 @@ class App extends Component {
   }
 
   onSuccess() {
-    this.setState({statusMessage: MESSAGE_STANDBY});
+    this.setState({
+      statusMessage: MESSAGE_STANDBY,
+      alertMessage: MESSAGE_EMPTY,
+    });
     this.setState({
       isSignedIn: true,
     })
@@ -187,8 +193,33 @@ class App extends Component {
             Promise.all(promises).then((allCalendars) => {
               let calendars = {};
               allCalendars.forEach(c => Object.assign(calendars, c));
-              this.setState({calendars});
-              this.setState({statusMessage: MESSAGE_EMPTY});
+
+              let allEvents = [];
+              for (let calendarId in calendars)
+                if (calendars.hasOwnProperty(calendarId))
+                  calendars[calendarId]
+                    .filter(event => !!event.start.dateTime)
+                    .filter(event => (!event.description || !event.description.includes(EVENT_DESCRIPTION_AUTO_CREATED_GOAL)))
+                    .forEach(event => allEvents.push(event));
+
+              const events = allEvents.sort(function (e1, e2) {
+                const t1 = new Date(e1.start.dateTime);
+                const t2 = new Date(e2.start.dateTime);
+                if (t1 < t2) {
+                  return -1;
+                }
+                if (t1 > t2) {
+                  return 1;
+                }
+                return 0;
+              });
+
+              this.setState({
+                calendars,
+                events: events,
+                statusMessage: MESSAGE_EMPTY,
+                alertMessage: 0 < events.length ? MESSAGE_EMPTY : MESSAGE_FOUND_NO_EVENTS,
+              });
             });
           });
         });
@@ -196,43 +227,16 @@ class App extends Component {
     });
   }
 
-  getAllEvents() {
-    let events = [];
-    for (let calendarId in this.state.calendars)
-      if (this.state.calendars.hasOwnProperty(calendarId))
-        this.state.calendars[calendarId]
-          .filter(event => !!event.start.dateTime)
-          .filter(event => (!event.description || !event.description.includes(EVENT_DESCRIPTION_AUTO_CREATED_GOAL)))
-          .forEach(event => events.push(event));
-
-    return events.sort(function (e1, e2) {
-      const t1 = new Date(e1.start.dateTime);
-      const t2 = new Date(e2.start.dateTime);
-      if (t1 < t2) {
-        return -1;
-      }
-      if (t1 > t2) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
   renderAgendaCalendarEvents() {
-    const events = this.getAllEvents();
-    if (0 < events.length)
-      return events.map(event => <Event key={event.id} event={event}/>);
-    return <p className="status">{MESSAGE_FOUND_NO_EVENTS}</p>
+    return this.state.events.map(event => <Event key={event.id} event={event}/>);
   }
 
   renderAgendaCalendar() {
     if (this.state.isSignedIn) {
       return (
         <div id="agendar-calendar">
-          {!!this.state.statusMessage ?
-            <p className="status">{this.state.statusMessage}</p> :
-            this.renderAgendaCalendarEvents()
-          }
+          {!!this.state.alertMessage ? <p className="status">{this.state.alertMessage}</p> : ""}
+          {this.renderAgendaCalendarEvents()}
         </div>
       )
     } else {
@@ -255,6 +259,7 @@ class App extends Component {
       <div id="agendar">
         <div id="agendar-clock">
           <Clock/>
+          {!!this.state.statusMessage ? <p className="status">{this.state.statusMessage}</p> : ""}
         </div>
         {this.renderAgendaCalendar()}
       </div>
