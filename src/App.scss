@@ -176,9 +176,30 @@ sup.tiny {
 .content {
   font-family: monospace;
   font-size: 10pt;
+  padding-left: 1em;
+  padding-right: 1em;
 
-  h1, h2, h3, h4, h5, h6, p {
+  h1, h2, h3, h4, h5, h6, p, li {
     margin-bottom: 0.62rem;
+    text-align: left;
+  }
+
+  a, a:hover, a:active, a:visited {
+    color: #2bff72;
+  }
+
+  ul {
+    padding-left: 1.62em;
+    padding-right: 1.62em;
+  }
+
+  li {
+    padding-left: 0;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
   }
 
   @media only screen and (min-width: $screen-sm) {
@@ -192,3 +213,4 @@ sup.tiny {
 .space-above {
   margin-top: 20px;
 }
+
