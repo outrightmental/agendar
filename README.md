@@ -39,11 +39,13 @@ Within 1 hour of occurring, an event is highlighted in lighter gray, and then wi
 
 ![Agendar™ by Outright Mental™ is a Heads-Up Display for being on time](public/images/AgendarUsage0.jpg)
 
-Within 1 minute of occurring, an event is highlighted with an animated rainbow of all hues, to demand attention:
-
-![Agendar™ by Outright Mental™ is a Heads-Up Display for being on time](public/images/AgendarUsage1.jpg)
+Finally, as shown in the main photo, within 1 minute of occurring, an event is highlighted with an animated rainbow of all hues, to demand attention.
 
 It's ***COMPLETELY FREE TO USE*** at **[agendar.outright.io](https://agendar.outright.io)**&mdash; just login with Google to display your Calendar events.
+
+We never access your information!
+
+Your browser will connect directly to Google Calendar in order display upcoming events in a unique way.
 
 Authored by [Charney Kaye](https://charneykaye.com) with &#9829; to meet the heightened strangeness of working from the internet.
 
