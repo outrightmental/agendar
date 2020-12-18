@@ -247,7 +247,10 @@ class App extends Component {
           </div>
           <button className="space-above" id="login-button">Login with Google</button>
           <div className="content space-above">
+            <Content name="details"/>
             <Content name="privacy-promise"/>
+            <Content name="about"/>
+            <Content name="legal"/>
           </div>
         </div>
       )
