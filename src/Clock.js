@@ -31,7 +31,7 @@ class Clock extends Component {
   pulse() {
     const d = new Date();
     this.setState({
-      time: fmtTime(d),
+      time: fmtTime(d, this.props.use24Hour),
       date: fmtDate(d),
     })
   }

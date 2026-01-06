@@ -25,6 +25,10 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    // Load clock format preference from localStorage, default to 24-hour
+    const savedClockFormat = localStorage.getItem('agendar_clock_format');
+    const use24Hour = savedClockFormat !== 'false'; // default to true
+    
     this.state = {
       statusMessage: MESSAGE_EMPTY,
       alertMessage: MESSAGE_EMPTY,
@@ -36,6 +40,7 @@ class App extends Component {
       calendarList: [],
       calendars: {},
       events: [],
+      use24Hour: use24Hour,
     }
   }
 
@@ -121,6 +126,12 @@ class App extends Component {
         alert("Failed to sign out!");
       }
     );
+  }
+
+  doToggleClockFormat() {
+    const newFormat = !this.state.use24Hour;
+    this.setState({use24Hour: newFormat});
+    localStorage.setItem('agendar_clock_format', newFormat.toString());
   }
 
   doMenuButtonClicked() {
@@ -228,7 +239,7 @@ class App extends Component {
   }
 
   renderAgendaCalendarEvents() {
-    return this.state.events.map(event => <Event key={event.id} event={event}/>);
+    return this.state.events.map(event => <Event key={event.id} event={event} use24Hour={this.state.use24Hour}/>);
   }
 
   renderAgendaCalendar() {
@@ -261,7 +272,7 @@ class App extends Component {
     return (
       <div id="agendar">
         <div id="agendar-clock">
-          <Clock/>
+          <Clock use24Hour={this.state.use24Hour}/>
           {!!this.state.statusMessage ? <p className="status">{this.state.statusMessage}</p> : ""}
         </div>
         {this.renderAgendaCalendar()}
@@ -295,6 +306,12 @@ class App extends Component {
               <Content name="about"/>
               <Content name="legal"/>
             </div>
+          </div>
+          <div className="menu-item menu-selection" onClick={(e) => {
+            e.stopPropagation();
+            this.doToggleClockFormat();
+          }}>
+            Clock Format: {this.state.use24Hour ? '24 Hour' : '12 Hour'}
           </div>
           {
             this.state.isSignedIn ?
