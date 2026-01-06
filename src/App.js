@@ -36,6 +36,25 @@ class App extends Component {
       calendarList: [],
       calendars: {},
       events: [],
+      selectedCalendars: this.loadSelectedCalendars(),
+    }
+  }
+
+  loadSelectedCalendars() {
+    try {
+      const saved = localStorage.getItem('agendar_selected_calendars');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      console.error("Failed to load selected calendars from localStorage", e);
+      return {};
+    }
+  }
+
+  saveSelectedCalendars(selectedCalendars) {
+    try {
+      localStorage.setItem('agendar_selected_calendars', JSON.stringify(selectedCalendars));
+    } catch (e) {
+      console.error("Failed to save selected calendars to localStorage", e);
     }
   }
 
@@ -123,6 +142,48 @@ class App extends Component {
     );
   }
 
+  toggleCalendar(calendarId) {
+    const selectedCalendars = {
+      ...this.state.selectedCalendars,
+      [calendarId]: !this.state.selectedCalendars[calendarId]
+    };
+    this.saveSelectedCalendars(selectedCalendars);
+    this.setState({selectedCalendars}, () => {
+      // Re-filter events based on new selection
+      this.filterEvents();
+    });
+  }
+
+  filterEvents() {
+    const calendars = this.state.calendars;
+    let allEvents = [];
+    for (let calendarId in calendars) {
+      if (calendars.hasOwnProperty(calendarId) && this.state.selectedCalendars[calendarId]) {
+        calendars[calendarId]
+          .filter(event => !!event.start.dateTime)
+          .filter(event => (!event.description || !event.description.includes(EVENT_DESCRIPTION_AUTO_CREATED_GOAL)))
+          .forEach(event => allEvents.push(event));
+      }
+    }
+
+    const events = allEvents.sort(function (e1, e2) {
+      const t1 = new Date(e1.start.dateTime);
+      const t2 = new Date(e2.start.dateTime);
+      if (t1 < t2) {
+        return -1;
+      }
+      if (t1 > t2) {
+        return 1;
+      }
+      return 0;
+    });
+
+    this.setState({
+      events: events,
+      alertMessage: 0 < events.length ? MESSAGE_EMPTY : MESSAGE_FOUND_NO_EVENTS,
+    });
+  }
+
   doMenuButtonClicked() {
     if (this.state.isMenuOpen)
       this.setState({isMenuOpen: false});
@@ -169,6 +230,30 @@ class App extends Component {
           }).then((response) => {
             let promises = [];
             this.setState({statusMessage: MESSAGE_LOADING_EVENTS});
+            
+            // Store calendar list
+            const calendarList = response.result.items.map(item => ({
+              id: item.id,
+              summary: item.summary,
+              backgroundColor: item.backgroundColor,
+            }));
+            
+            // Initialize selected calendars if not already set
+            const selectedCalendars = {...this.state.selectedCalendars};
+            let hasChanges = false;
+            calendarList.forEach(cal => {
+              if (selectedCalendars[cal.id] === undefined) {
+                selectedCalendars[cal.id] = true; // Default to selected
+                hasChanges = true;
+              }
+            });
+            
+            if (hasChanges) {
+              this.saveSelectedCalendars(selectedCalendars);
+            }
+            
+            this.setState({calendarList, selectedCalendars});
+            
             response.result.items.forEach(item => {
               let calendarId = item.id;
               promises.push(new Promise((resolve, reject) => {
@@ -196,7 +281,7 @@ class App extends Component {
 
               let allEvents = [];
               for (let calendarId in calendars)
-                if (calendars.hasOwnProperty(calendarId))
+                if (calendars.hasOwnProperty(calendarId) && this.state.selectedCalendars[calendarId])
                   calendars[calendarId]
                     .filter(event => !!event.start.dateTime)
                     .filter(event => (!event.description || !event.description.includes(EVENT_DESCRIPTION_AUTO_CREATED_GOAL)))
@@ -296,6 +381,28 @@ class App extends Component {
               <Content name="legal"/>
             </div>
           </div>
+          {
+            this.state.isSignedIn && this.state.calendarList.length > 0 ?
+              <div className="menu-item">
+                <h3>Select Calendars</h3>
+                <div className="calendar-list">
+                  {this.state.calendarList.map(calendar => (
+                    <div key={calendar.id} className="calendar-item" onClick={(e) => {
+                      e.stopPropagation();
+                      this.toggleCalendar(calendar.id);
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={!!this.state.selectedCalendars[calendar.id]}
+                        onChange={() => this.toggleCalendar(calendar.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <span className="calendar-name">{calendar.summary}</span>
+                    </div>
+                  ))}
+                </div>
+              </div> : ''
+          }
           {
             this.state.isSignedIn ?
               <div className="menu-item menu-selection" onClick={() => this.doLogout()}>Logout</div> : ''

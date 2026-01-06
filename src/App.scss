@@ -214,3 +214,32 @@ sup.tiny {
   margin-top: 20px;
 }
 
+.calendar-list {
+  text-align: left;
+  margin-top: 1em;
+}
+
+.calendar-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5em 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.calendar-item:hover {
+  opacity: 0.8;
+}
+
+.calendar-item input[type="checkbox"] {
+  margin-right: 0.5em;
+  cursor: pointer;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.calendar-name {
+  font-family: monospace;
+  font-size: 10pt;
+}
+
