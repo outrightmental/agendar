@@ -55,10 +55,14 @@ class App extends Component {
         this.pulse();
       }, APP_INTERVAL_MILLIS)
     });
+
+    // Listen for fullscreen change events
+    document.addEventListener('fullscreenchange', this.handleFullscreenChange.bind(this));
   }
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
+    document.removeEventListener('fullscreenchange', this.handleFullscreenChange.bind(this));
   }
 
   // Pulse happens every N milliseconds
@@ -155,6 +159,12 @@ class App extends Component {
         }
       );
     else alert("Fullscreen mode not supported in your browser!");
+  }
+
+  handleFullscreenChange() {
+    // Update state based on actual fullscreen status
+    const isCurrentlyFullscreen = !!document.fullscreenElement;
+    this.setState({isFullscreen: isCurrentlyFullscreen});
   }
 
   fetchCalendars() {
