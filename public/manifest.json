@@ -1,6 +1,7 @@
 {
   "short_name": "Agendar™",
-  "name": "a Heads-Up Display for being on time.",
+  "name": "Agendar™ - Heads-Up Display for being on time",
+  "description": "A Heads-Up Display for being on time. Shows your Google Calendar events with visual cues for upcoming meetings.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,9 +19,21 @@
       "sizes": "32x32"
     },
     {
+      "src": "android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
       "src": "logo256.png",
       "type": "image/png",
       "sizes": "256x256"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
@@ -29,7 +42,11 @@
     }
   ],
   "start_url": ".",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "theme_color": "#ffffff",
-  "background_color": "#000000"
+  "background_color": "#000000",
+  "categories": ["productivity", "utilities"],
+  "prefer_related_applications": false
 }
