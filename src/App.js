@@ -296,6 +296,13 @@ class App extends Component {
                   calendars[calendarId]
                     .filter(event => !!event.start.dateTime)
                     .filter(event => (!event.description || !event.description.includes(EVENT_DESCRIPTION_AUTO_CREATED_GOAL)))
+                    .filter(event => event.status !== 'cancelled')
+                    .filter(event => {
+                      // Filter out events where the current user has declined
+                      if (!event.attendees) return true;
+                      const selfAttendee = event.attendees.find(attendee => attendee.self);
+                      return !selfAttendee || selfAttendee.responseStatus !== 'declined';
+                    })
                     .forEach(event => allEvents.push(event));
 
               const events = allEvents.sort(function (e1, e2) {
