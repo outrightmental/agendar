@@ -15,20 +15,27 @@ const
   TIME_MINUTE = 'MINUTE',
   TIME_MINUTES = 'MINUTES';
 
-export const fmtDateTime = (d) => {
-  return `${fmtDate(d)} ${fmtTime(d)}`;
+export const fmtDateTime = (d, use24Hour = true) => {
+  return `${fmtDate(d)} ${fmtTime(d, use24Hour)}`;
 }
 
-export const fmtTodayTime = (d) => {
-  return `${WEEK_TODAY} ${fmtTime(d)}`;
+export const fmtTodayTime = (d, use24Hour = true) => {
+  return `${WEEK_TODAY} ${fmtTime(d, use24Hour)}`;
 }
 
 export const fmtDate = (d) => {
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${WEEK_DAYS[d.getDay()]}`;
 }
 
-export const fmtTime = (d) => {
-  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+export const fmtTime = (d, use24Hour = true) => {
+  if (use24Hour) {
+    return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+  } else {
+    const hours = d.getHours();
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hour12 = hours % 12 || 12;
+    return `${hour12}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())} ${period}`;
+  }
 }
 
 export const fmtTimeUntil = (d) => {
