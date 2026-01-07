@@ -1,4 +1,4 @@
-// Copyright (C) 2020 Outright Mental
+// Copyright (C) 2026 Outright Mental
 // Service Worker Registration
 
 // This optional code is used to register a service worker.

@@ -1,31 +1,18 @@
-// Copyright (C) 2020 Outright Mental
+// Copyright (C) 2026 Outright Mental
 // Service Worker for Agendar PWA
 
 const CACHE_NAME = 'agendar-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/static/css/main.css',
-  '/static/js/main.js',
-  '/manifest.json',
-  '/logo192.png',
-  '/logo512.png',
-  '/favicon.ico'
-];
 
-// Install event - cache resources
+// Install event - prepare cache
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        // Cache what's available, don't fail on missing resources
-        return Promise.allSettled(
-          urlsToCache.map(url => 
-            cache.add(url).catch(err => console.log(`Failed to cache ${url}:`, err))
-          )
-        );
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('Service Worker: Cache opened');
+      // Try to cache the root page
+      return cache.add('/').catch(err => {
+        console.log('Failed to cache root:', err);
+      });
+    })
   );
   // Force the waiting service worker to become the active service worker
   self.skipWaiting();
