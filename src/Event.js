@@ -17,6 +17,7 @@ import {
 
 const Event = function (props) {
   let event = props.event;
+  let use24Hour = props.use24Hour !== undefined ? props.use24Hour : true;
   let now = new Date();
   let startAt = event.start.dateTime ?
     new Date(event.start.dateTime) :
@@ -26,7 +27,7 @@ const Event = function (props) {
     <div className={`agendar-event ${computeStatusClass(startAt)}`} key={event.id}>
       <div className="header">
         <div className="t-minus">{fmtTimeUntil(startAt)}</div>
-        <div className="date-time">{isToday ? fmtTodayTime(startAt) : fmtDateTime(startAt)}</div>
+        <div className="date-time">{isToday ? fmtTodayTime(startAt, use24Hour) : fmtDateTime(startAt, use24Hour)}</div>
       </div>
       <div className="info">
         <div className="summary">{event.summary}</div>

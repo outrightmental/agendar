@@ -24,6 +24,13 @@ class Clock extends Component {
     this.pulse();
   }
 
+  componentDidUpdate(prevProps) {
+    // Update immediately when clock format changes
+    if (prevProps.use24Hour !== this.props.use24Hour) {
+      this.pulse();
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
   }
