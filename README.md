@@ -47,7 +47,7 @@ We never access your information!
 
 Your browser will connect directly to Google Calendar in order display upcoming events in a unique way.
 
-Authored by [Charney Kaye](https://charneykaye.com) with &#9829; to meet the heightened strangeness of working from the internet.
+Authored by [Nick Charney Kaye](https://charneykaye.com) with &#9829; to meet the heightened strangeness of working from the internet.
 
 Sponsored by [Outright Mental](https://outrightmental.com)<sup>&trade;</sup>
 
