@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Agendar™ is a Heads-Up Display for being on time. It's a React-based web application that displays Google Calendar events in a minimalist, full-screen format with visual time-based cues.
+Agendar is a Heads-Up Display for being on time. It's a React-based web application that displays Google Calendar events in a minimalist, full-screen format with visual time-based cues.
 
 **Key Features:**
 - Dark backdrop with monochrome minimal design
