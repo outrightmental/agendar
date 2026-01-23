@@ -34,8 +34,7 @@ export const
   MESSAGE_STANDBY = "Standby…",
   MESSAGE_INITIALIZING = "Initializing…",
   MESSAGE_LOADING_CALENDARS = "Loadings Calendars…",
-  MESSAGE_LOADING_EVENTS = "Loading Events from Calendars…",
-  MESSAGE_FOUND_NO_EVENTS = "Found no upcoming events.";
+  MESSAGE_LOADING_EVENTS = "Loading Events from Calendars…";
 
 // secrets
 export const
