@@ -48,6 +48,8 @@ class App extends Component {
       timeWindowMode: timeWindowSettings.mode,
       rollingTimeWindow: timeWindowSettings.rollingTimeWindow,
       dailyBeginsAt: timeWindowSettings.dailyBeginsAt,
+      rollingTimeWindowError: null,
+      dailyBeginsAtError: null,
     }
   }
 
@@ -250,7 +252,9 @@ class App extends Component {
   setTimeWindowMode(mode) {
     this.setState({
       timeWindowMode: mode,
-      lastFetchedMillis: null
+      lastFetchedMillis: null,
+      rollingTimeWindowError: null,
+      dailyBeginsAtError: null
     }, () => {
       this.saveTimeWindowSettings(
         this.state.timeWindowMode,
@@ -261,28 +265,42 @@ class App extends Component {
   }
 
   setRollingTimeWindow(value) {
+    // Validate the input
+    const isValid = validateRollingTimeWindow(value);
+    const error = isValid ? null : 'Format: hh:mm (max 168:00, minutes 0-59)';
+    
     this.setState({
       rollingTimeWindow: value,
-      lastFetchedMillis: null
+      rollingTimeWindowError: error,
+      lastFetchedMillis: isValid ? null : this.state.lastFetchedMillis
     }, () => {
-      this.saveTimeWindowSettings(
-        this.state.timeWindowMode,
-        this.state.rollingTimeWindow,
-        this.state.dailyBeginsAt
-      );
+      if (isValid) {
+        this.saveTimeWindowSettings(
+          this.state.timeWindowMode,
+          this.state.rollingTimeWindow,
+          this.state.dailyBeginsAt
+        );
+      }
     });
   }
 
   setDailyBeginsAt(value) {
+    // Validate the input
+    const isValid = validateDailyTime(value);
+    const error = isValid ? null : 'Format: hh:mm AM/PM (e.g., 4:00 AM)';
+    
     this.setState({
       dailyBeginsAt: value,
-      lastFetchedMillis: null
+      dailyBeginsAtError: error,
+      lastFetchedMillis: isValid ? null : this.state.lastFetchedMillis
     }, () => {
-      this.saveTimeWindowSettings(
-        this.state.timeWindowMode,
-        this.state.rollingTimeWindow,
-        this.state.dailyBeginsAt
-      );
+      if (isValid) {
+        this.saveTimeWindowSettings(
+          this.state.timeWindowMode,
+          this.state.rollingTimeWindow,
+          this.state.dailyBeginsAt
+        );
+      }
     });
   }
     
@@ -556,17 +574,22 @@ class App extends Component {
                   />
                   <span className="radio-label">Rolling</span>
                   {this.state.timeWindowMode === 'Rolling' && (
-                    <input
-                      type="text"
-                      className="time-input"
-                      value={this.state.rollingTimeWindow}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        this.setRollingTimeWindow(e.target.value);
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                      placeholder="24:00"
-                    />
+                    <div className="time-input-container">
+                      <input
+                        type="text"
+                        className={`time-input ${this.state.rollingTimeWindowError ? 'invalid' : ''}`}
+                        value={this.state.rollingTimeWindow}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          this.setRollingTimeWindow(e.target.value);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        placeholder="24:00"
+                      />
+                      {this.state.rollingTimeWindowError && (
+                        <span className="validation-error">{this.state.rollingTimeWindowError}</span>
+                      )}
+                    </div>
                   )}
                 </label>
               </div>
@@ -584,17 +607,22 @@ class App extends Component {
                   />
                   <span className="radio-label">Daily</span>
                   {this.state.timeWindowMode === 'Daily' && (
-                    <input
-                      type="text"
-                      className="time-input"
-                      value={this.state.dailyBeginsAt}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        this.setDailyBeginsAt(e.target.value);
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                      placeholder="4:00 AM"
-                    />
+                    <div className="time-input-container">
+                      <input
+                        type="text"
+                        className={`time-input ${this.state.dailyBeginsAtError ? 'invalid' : ''}`}
+                        value={this.state.dailyBeginsAt}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          this.setDailyBeginsAt(e.target.value);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        placeholder="4:00 AM"
+                      />
+                      {this.state.dailyBeginsAtError && (
+                        <span className="validation-error">{this.state.dailyBeginsAtError}</span>
+                      )}
+                    </div>
                   )}
                 </label>
               </div>

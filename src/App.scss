@@ -287,9 +287,31 @@ sup.tiny {
   width: 100px;
 }
 
+.time-window-mode .time-input.invalid {
+  border-color: rgba(255, 100, 100, 0.8);
+  background: rgba(255, 100, 100, 0.1);
+}
+
 .time-window-mode .time-input:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.6);
   background: rgba(255, 255, 255, 0.15);
+}
+
+.time-window-mode .time-input.invalid:focus {
+  border-color: rgba(255, 100, 100, 1);
+}
+
+.time-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.validation-error {
+  font-family: monospace;
+  font-size: 8pt;
+  color: #ff6666;
+  margin-top: 0.2em;
 }
 
