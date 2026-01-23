@@ -50,7 +50,7 @@ REACT_APP_GOOGLE_ANALYTICS_ID=G-123
 - Use 2 spaces for indentation (see `.editorconfig`)
 - Follow ESLint rules (`react-app` config)
 - Use functional components where possible, but class components exist for legacy code
-- Copyright header: `// Copyright (C) 2020 Outright Mental`
+- Copyright header: `// Copyright (C) 2026 Outright Mental`
 
 ### File Organization
 - Components in `src/` (e.g., `App.js`, `Clock.js`, `Event.js`, `Content.js`)
