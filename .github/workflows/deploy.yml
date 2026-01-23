@@ -56,8 +56,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: AWS s3 sync
-        run: aws s3 sync ./build/ s3://agendar.outright.io --delete
+      - name: AWS s3 sync static assets
+        run: aws s3 sync ./build/static/ s3://agendar.outright.io/static/ --delete --cache-control "public,max-age=31536000,immutable"
+
+      - name: AWS s3 sync index.html and other files
+        run: aws s3 sync ./build/ s3://agendar.outright.io --delete --exclude "static/*" --cache-control "public,max-age=0,must-revalidate"
 
       - name: AWS CloudFront invalidation
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
