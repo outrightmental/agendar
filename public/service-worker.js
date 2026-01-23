@@ -98,19 +98,24 @@ self.addEventListener('fetch', (event) => {
                 if (request.method === 'GET') {
                   cache.put(request, responseToCache);
                 }
+              })
+              .catch((cacheError) => {
+                console.warn('Service Worker: Failed to cache response:', cacheError);
               });
 
             return response;
           })
           .catch((error) => {
-            console.error('Service Worker: Fetch failed:', error);
+            console.error('Service Worker: Fetch failed for', request.url, error);
             // Return cached response if available, even if stale
             return caches.match(request)
               .then(cachedResponse => {
                 if (cachedResponse) {
+                  console.log('Service Worker: Serving stale cache for', request.url);
                   return cachedResponse;
                 }
                 // Could return a custom offline page here
+                console.error('Service Worker: No cached fallback available for', request.url);
                 throw error;
               });
           });
