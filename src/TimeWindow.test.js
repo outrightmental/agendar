@@ -75,4 +75,25 @@ describe('Time Window Settings', () => {
     expect(stored.mode).toBe('Daily');
     expect(stored.dailyBeginsAt).toBe('8:00 AM');
   });
+
+  test('validates rolling time window format correctly', () => {
+    const app = new App({});
+    expect(app.validateRollingTimeWindow('24:00')).toBe(true);
+    expect(app.validateRollingTimeWindow('12:30')).toBe(true);
+    expect(app.validateRollingTimeWindow('100:45')).toBe(true);
+    expect(app.validateRollingTimeWindow('25:70')).toBe(false); // invalid minutes
+    expect(app.validateRollingTimeWindow('abc:def')).toBe(false); // non-numeric
+    expect(app.validateRollingTimeWindow('12')).toBe(false); // missing colon
+  });
+
+  test('validates daily time format correctly', () => {
+    const app = new App({});
+    expect(app.validateDailyTime('4:00 AM')).toBe(true);
+    expect(app.validateDailyTime('12:00 PM')).toBe(true);
+    expect(app.validateDailyTime('11:59 AM')).toBe(true);
+    expect(app.validateDailyTime('25:00 PM')).toBe(false); // invalid hour
+    expect(app.validateDailyTime('12:70 AM')).toBe(false); // invalid minutes
+    expect(app.validateDailyTime('abc')).toBe(false); // invalid format
+    expect(app.validateDailyTime('12:00')).toBe(false); // missing AM/PM
+  });
 });

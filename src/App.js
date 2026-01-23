@@ -188,25 +188,55 @@ class App extends Component {
     localStorage.setItem('agendar_clock_format', newFormat.toString());
   }
 
+  // Validate rolling time window format (hh:mm)
+  validateRollingTimeWindow(value) {
+    const parts = value.split(':');
+    if (parts.length !== 2) return false;
+    const [hours, minutes] = parts.map(Number);
+    return !isNaN(hours) && !isNaN(minutes) && hours >= 0 && hours <= 999 && minutes >= 0 && minutes < 60;
+  }
+
+  // Validate daily time format (hh:mm AM/PM)
+  validateDailyTime(value) {
+    const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return false;
+    const hours = parseInt(match[1], 10);
+    const minutes = parseInt(match[2], 10);
+    return hours >= 1 && hours <= 12 && minutes >= 0 && minutes < 60;
+  }
+
   // Calculate the end time for fetching events based on time window settings
   calculateFetchEndTime() {
     const now = new Date();
     
     if (this.state.timeWindowMode === 'Rolling') {
       // Parse rolling time window (hh:mm format)
+      if (!this.validateRollingTimeWindow(this.state.rollingTimeWindow)) {
+        console.warn('Invalid rolling time window format, using default 24:00');
+        return new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      }
       const [hours, minutes] = this.state.rollingTimeWindow.split(':').map(Number);
       const totalMinutes = hours * 60 + minutes;
       return new Date(now.getTime() + totalMinutes * 60 * 1000);
     } else {
       // Daily mode - calculate until the specified time of day
+      if (!this.validateDailyTime(this.state.dailyBeginsAt)) {
+        console.warn('Invalid daily time format, using default 4:00 AM');
+        const targetTime = new Date(now);
+        targetTime.setHours(4, 0, 0, 0);
+        if (targetTime <= now) {
+          targetTime.setDate(targetTime.getDate() + 1);
+        }
+        return targetTime;
+      }
       const [time, period] = this.state.dailyBeginsAt.split(' ');
       const [hours, minutes] = time.split(':').map(Number);
       
       // Convert to 24-hour format
       let hour24 = hours;
-      if (period === 'PM' && hours !== 12) {
+      if (period.toUpperCase() === 'PM' && hours !== 12) {
         hour24 += 12;
-      } else if (period === 'AM' && hours === 12) {
+      } else if (period.toUpperCase() === 'AM' && hours === 12) {
         hour24 = 0;
       }
       
@@ -224,38 +254,41 @@ class App extends Component {
   }
 
   setTimeWindowMode(mode) {
-    this.setState({timeWindowMode: mode}, () => {
+    this.setState({
+      timeWindowMode: mode,
+      lastFetchedMillis: null
+    }, () => {
       this.saveTimeWindowSettings(
         this.state.timeWindowMode,
         this.state.rollingTimeWindow,
         this.state.dailyBeginsAt
       );
-      // Force re-fetch of events with new time window
-      this.setState({lastFetchedMillis: null});
     });
   }
 
   setRollingTimeWindow(value) {
-    this.setState({rollingTimeWindow: value}, () => {
+    this.setState({
+      rollingTimeWindow: value,
+      lastFetchedMillis: null
+    }, () => {
       this.saveTimeWindowSettings(
         this.state.timeWindowMode,
         this.state.rollingTimeWindow,
         this.state.dailyBeginsAt
       );
-      // Force re-fetch of events with new time window
-      this.setState({lastFetchedMillis: null});
     });
   }
 
   setDailyBeginsAt(value) {
-    this.setState({dailyBeginsAt: value}, () => {
+    this.setState({
+      dailyBeginsAt: value,
+      lastFetchedMillis: null
+    }, () => {
       this.saveTimeWindowSettings(
         this.state.timeWindowMode,
         this.state.rollingTimeWindow,
         this.state.dailyBeginsAt
       );
-      // Force re-fetch of events with new time window
-      this.setState({lastFetchedMillis: null});
     });
   }
     
