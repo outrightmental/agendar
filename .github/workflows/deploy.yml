@@ -57,7 +57,7 @@ jobs:
           aws-region: us-east-1
 
       - name: AWS s3 sync
-        run: aws s3 sync ./build/ s3://agendar.outright.io
+        run: aws s3 sync ./build/ s3://agendar.outright.io --delete
 
       - name: AWS CloudFront invalidation
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
