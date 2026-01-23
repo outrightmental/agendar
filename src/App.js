@@ -116,10 +116,23 @@ class App extends Component {
         this.pulse();
       }, APP_INTERVAL_MILLIS)
     });
+
+    // Listen for fullscreen changes (e.g., when user presses ESC)
+    this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
+    document.addEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', this.handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
   }
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
+    
+    // Remove fullscreen event listeners
+    document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
   }
 
   // Pulse happens every N milliseconds
@@ -396,6 +409,17 @@ class App extends Component {
         }
       );
     else alert("Fullscreen mode not supported in your browser!");
+  }
+
+  handleFullscreenChange() {
+    // Update state based on actual fullscreen status
+    const isCurrentlyFullscreen = !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement
+    );
+    this.setState({isFullscreen: isCurrentlyFullscreen});
   }
 
   fetchCalendars() {
