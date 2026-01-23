@@ -91,10 +91,13 @@ module.exports = function (proxy, allowedHost) {
       publicPath: paths.publicUrlOrPath.slice(0, -1),
     },
 
-    server: getHttpsConfig() ? {
-      type: 'https',
-      options: getHttpsConfig()
-    } : 'http',
+    server: (() => {
+      const httpsConfig = getHttpsConfig();
+      return httpsConfig ? {
+        type: 'https',
+        options: httpsConfig
+      } : 'http';
+    })(),
     host,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
