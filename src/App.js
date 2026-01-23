@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Outright Mental
 
-/* global gapi */
+/* global gapi, google */
 import React, {Component} from 'react';
 import './App.scss';
 import {
@@ -64,14 +64,15 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const script = document.createElement("script");
-    script.src = "https://apis.google.com/js/platform.js";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
+    // Check if Google APIs are already loaded
+    if (window.gapi && window.google) {
       this.didLoadGoogleApi();
-    };
-    document.head.appendChild(script);
+    } else {
+      // Wait for scripts to load
+      window.addEventListener('load', () => {
+        this.didLoadGoogleApi();
+      });
+    }
 
     // Begin Interval
     this.setState({
@@ -98,53 +99,93 @@ class App extends Component {
   }
 
   didLoadGoogleApi() {
-    const successCallback = this.onSuccess.bind(this);
+    // Initialize the token client with Google Identity Services
+    this.tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_CONFIG.client_id,
+      scope: GOOGLE_CLIENT_CONFIG.scope,
+      callback: (tokenResponse) => {
+        if (tokenResponse && tokenResponse.access_token) {
+          this.accessToken = tokenResponse.access_token;
+          this.onSuccess();
+        }
+      },
+    });
 
-    window.gapi.load('auth2', () => {
-      this.auth2 = gapi.auth2.init(GOOGLE_CLIENT_CONFIG)
-      this.auth2.then(() => {
+    // Check if user already has a valid token (stored from previous session)
+    const storedToken = localStorage.getItem('gapi_access_token');
+    if (storedToken) {
+      // Verify token is still valid by attempting to use it
+      this.accessToken = storedToken;
+      window.gapi.load('client', () => {
+        gapi.client.setToken({ access_token: storedToken });
+        gapi.client.init({
+          apiKey: GOOGLE_CLIENT_CONFIG.apiKey,
+          discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+        }).then(() => {
+          // Test if token is valid
+          return gapi.client.calendar.calendarList.list({ maxResults: 1 });
+        }).then(() => {
+          // Token is valid
+          this.setState({ isSignedIn: true });
+          this.pulse();
+        }).catch(() => {
+          // Token is invalid, clear it
+          localStorage.removeItem('gapi_access_token');
+          this.accessToken = null;
+        });
+      });
+    }
+  }
+
+  onSuccess() {
+    // Store the access token for future sessions
+    if (this.accessToken) {
+      localStorage.setItem('gapi_access_token', this.accessToken);
+    }
+
+    // Initialize gapi client with the token
+    window.gapi.load('client', () => {
+      gapi.client.setToken({ access_token: this.accessToken });
+      gapi.client.init({
+        apiKey: GOOGLE_CLIENT_CONFIG.apiKey,
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+      }).then(() => {
         this.setState({
-          isSignedIn: this.auth2.isSignedIn.get(),
+          statusMessage: MESSAGE_STANDBY,
+          alertMessage: MESSAGE_EMPTY,
+          isSignedIn: true,
         });
         this.pulse();
       });
     });
-    window.gapi.load('signin2', function () {
-      // Method 3: render a sign in button
-      // using this method will show Signed In if the user is already signed in
-      const opts = {
-        ...GOOGLE_CLIENT_CONFIG,
-        width: 200,
-        height: 50,
-        onsuccess: successCallback
-      };
-      gapi.signin2.render('login-button', opts)
-    })
   }
 
-  onSuccess() {
-    this.setState({
-      statusMessage: MESSAGE_STANDBY,
-      alertMessage: MESSAGE_EMPTY,
-    });
-    this.setState({
-      isSignedIn: true,
-    })
+  doLogin() {
+    // Request access token using the token client
+    if (this.tokenClient) {
+      this.tokenClient.requestAccessToken();
+    }
   }
 
   doLogout() {
-    this.auth2.signOut().then(
-      () => {
+    if (this.accessToken) {
+      google.accounts.oauth2.revoke(this.accessToken, () => {
+        localStorage.removeItem('gapi_access_token');
+        this.accessToken = null;
         this.setState({
           isSignedIn: false,
           lastFetchedMillis: null,
-        })
+        });
         window.location.reload(false);
-      },
-      () => {
-        alert("Failed to sign out!");
-      }
-    );
+      });
+    } else {
+      localStorage.removeItem('gapi_access_token');
+      this.setState({
+        isSignedIn: false,
+        lastFetchedMillis: null,
+      });
+      window.location.reload(false);
+    }
   }
 
   doToggleClockFormat() {
@@ -348,7 +389,7 @@ class App extends Component {
           <div className="hero">
             <Content name="hero"/>
           </div>
-          <button className="space-above" id="login-button">Login with Google</button>
+          <button className="space-above" id="login-button" onClick={() => this.doLogin()}>Login with Google</button>
           <div className="content space-above">
             <Content name="details"/>
             <Content name="privacy-promise"/>
