@@ -45,6 +45,13 @@ jobs:
       - name: Install Packages
         run: npm ci
 
+        
+      - name: Add salt to index.html
+        run: |
+          echo "Adding salt to index.html"
+          SALT=$(date +%s)
+          sed -i "s|%SALT%|$SALT|g" public/index.html
+
       - name: Build page
         run: npm run build
         env:
