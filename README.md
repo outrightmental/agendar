@@ -4,7 +4,7 @@
 
 **a Heads-Up Display for being on time.**
 
-![Agendar™ by Outright Mental™ is a Heads-Up Display for being on time](public/images/AgendarUsage1.jpg)
+![Agendar by Outright Mental™ is a Heads-Up Display for being on time](public/images/AgendarUsage1.jpg)
 
 In a world of remote meetings, challenges arise between the focus of working without distraction, and showing up on time for events.
 
@@ -31,13 +31,13 @@ Most crucially, there is a security requirement:
 
 * **_Don't share my Google data!_ Use the latest Google APIs to authenticate directly from a web browser, and display events, without touching my data.**
 
-That's exactly what Agendar™ is!
+That's exactly what Agendar is!
 
 It's required to have [Google Calendar](https://calendar.google.com/) in order to run the app in your web browser, authenticate directly with the latest Google APIs, and display events, without touching your data:
 
 Within 1 hour of occurring, an event is highlighted in lighter gray, and then within 10 minutes of occurring, an event is highlighted in yellow, to draw visual attention:
 
-![Agendar™ by Outright Mental™ is a Heads-Up Display for being on time](public/images/AgendarUsage0.jpg)
+![Agendar by Outright Mental™ is a Heads-Up Display for being on time](public/images/AgendarUsage0.jpg)
 
 Finally, as shown in the main photo, within 1 minute of occurring, an event is highlighted with an animated rainbow of all hues, to demand attention.
 

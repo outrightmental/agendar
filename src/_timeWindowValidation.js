@@ -1,4 +1,4 @@
-// Copyright (C) 2020 Outright Mental
+// Copyright (C) 2026 Outright Mental
 
 // Validate rolling time window format (hh:mm)
 export function validateRollingTimeWindow(value) {
