@@ -2,6 +2,7 @@
 
 import {render, screen, fireEvent} from '@testing-library/react';
 import App from './App';
+import {validateRollingTimeWindow, validateDailyTime} from './_timeWindowValidation';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -77,23 +78,25 @@ describe('Time Window Settings', () => {
   });
 
   test('validates rolling time window format correctly', () => {
-    const app = new App({});
-    expect(app.validateRollingTimeWindow('24:00')).toBe(true);
-    expect(app.validateRollingTimeWindow('12:30')).toBe(true);
-    expect(app.validateRollingTimeWindow('100:45')).toBe(true);
-    expect(app.validateRollingTimeWindow('25:70')).toBe(false); // invalid minutes
-    expect(app.validateRollingTimeWindow('abc:def')).toBe(false); // non-numeric
-    expect(app.validateRollingTimeWindow('12')).toBe(false); // missing colon
+    expect(validateRollingTimeWindow('24:00')).toBe(true);
+    expect(validateRollingTimeWindow('12:30')).toBe(true);
+    expect(validateRollingTimeWindow('100:45')).toBe(true);
+    expect(validateRollingTimeWindow('168:00')).toBe(true); // max 7 days
+    expect(validateRollingTimeWindow('169:00')).toBe(false); // exceeds max
+    expect(validateRollingTimeWindow('25:70')).toBe(false); // invalid minutes
+    expect(validateRollingTimeWindow('abc:def')).toBe(false); // non-numeric
+    expect(validateRollingTimeWindow('12')).toBe(false); // missing colon
+    expect(validateRollingTimeWindow(null)).toBe(false); // null input
   });
 
   test('validates daily time format correctly', () => {
-    const app = new App({});
-    expect(app.validateDailyTime('4:00 AM')).toBe(true);
-    expect(app.validateDailyTime('12:00 PM')).toBe(true);
-    expect(app.validateDailyTime('11:59 AM')).toBe(true);
-    expect(app.validateDailyTime('25:00 PM')).toBe(false); // invalid hour
-    expect(app.validateDailyTime('12:70 AM')).toBe(false); // invalid minutes
-    expect(app.validateDailyTime('abc')).toBe(false); // invalid format
-    expect(app.validateDailyTime('12:00')).toBe(false); // missing AM/PM
+    expect(validateDailyTime('4:00 AM')).toBe(true);
+    expect(validateDailyTime('12:00 PM')).toBe(true);
+    expect(validateDailyTime('11:59 AM')).toBe(true);
+    expect(validateDailyTime('25:00 PM')).toBe(false); // invalid hour
+    expect(validateDailyTime('12:70 AM')).toBe(false); // invalid minutes
+    expect(validateDailyTime('abc')).toBe(false); // invalid format
+    expect(validateDailyTime('12:00')).toBe(false); // missing AM/PM
+    expect(validateDailyTime(null)).toBe(false); // null input
   });
 });
