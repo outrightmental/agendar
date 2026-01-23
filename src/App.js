@@ -7,16 +7,15 @@ import {
   APP_INTERVAL_MILLIS,
   CACHE_INVALIDATE_MILLIS,
   CALENDAR_FETCH_ROWS_MAX,
-  CALENDAR_FETCH_TO_FUTURE_MILLIS,
   EVENT_DESCRIPTION_AUTO_CREATED_GOAL,
   GOOGLE_CLIENT_CONFIG,
   MESSAGE_EMPTY,
-  MESSAGE_FOUND_NO_EVENTS,
   MESSAGE_INITIALIZING,
   MESSAGE_LOADING_CALENDARS,
   MESSAGE_LOADING_EVENTS,
   MESSAGE_STANDBY,
 } from "./_config";
+import {validateRollingTimeWindow, validateDailyTime} from "./_timeWindowValidation";
 import Content from "./Content";
 import Event from "./Event";
 import Clock from "./Clock";
@@ -28,6 +27,9 @@ class App extends Component {
     // Load clock format preference from localStorage, default to 24-hour
     const savedClockFormat = localStorage.getItem('agendar_clock_format');
     const use24Hour = savedClockFormat !== 'false'; // default to true
+    
+    // Load time window settings from localStorage
+    const timeWindowSettings = this.loadTimeWindowSettings();
     
     this.state = {
       statusMessage: MESSAGE_EMPTY,
@@ -42,6 +44,11 @@ class App extends Component {
       events: [],
       use24Hour: use24Hour,
       selectedCalendars: this.loadSelectedCalendars(),
+      timeWindowMode: timeWindowSettings.mode,
+      rollingTimeWindow: timeWindowSettings.rollingTimeWindow,
+      dailyBeginsAt: timeWindowSettings.dailyBeginsAt,
+      rollingTimeWindowError: null,
+      dailyBeginsAtError: null,
     }
   }
 
@@ -60,6 +67,36 @@ class App extends Component {
       localStorage.setItem('agendar_selected_calendars', JSON.stringify(selectedCalendars));
     } catch (e) {
       console.error("Failed to save selected calendars to localStorage", e);
+    }
+  }
+
+  loadTimeWindowSettings() {
+    try {
+      const saved = localStorage.getItem('agendar_time_window_settings');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error("Failed to load time window settings from localStorage", e);
+    }
+    // Return defaults
+    return {
+      mode: 'Daily',
+      rollingTimeWindow: '24:00',
+      dailyBeginsAt: '4:00 AM',
+    };
+  }
+
+  saveTimeWindowSettings(mode, rollingTimeWindow, dailyBeginsAt) {
+    try {
+      const settings = {
+        mode,
+        rollingTimeWindow,
+        dailyBeginsAt,
+      };
+      localStorage.setItem('agendar_time_window_settings', JSON.stringify(settings));
+    } catch (e) {
+      console.error("Failed to save time window settings to localStorage", e);
     }
   }
 
@@ -193,6 +230,138 @@ class App extends Component {
     this.setState({use24Hour: newFormat});
     localStorage.setItem('agendar_clock_format', newFormat.toString());
   }
+
+  // Generate dynamic "no events" message based on time window mode
+  getNoEventsMessage() {
+    if (this.state.timeWindowMode === 'Rolling') {
+      // Parse rolling time window to get hours
+      const [hours, minutes] = this.state.rollingTimeWindow.split(':').map(Number);
+      const totalHours = hours + (minutes / 60);
+      
+      // Round to nearest whole number for cleaner display
+      const displayHours = Math.round(totalHours);
+      
+      return `Your calendar is open for the next ${displayHours} hours!`;
+    } else {
+      // Daily mode
+      return "Your calendar is open for the rest of the day!";
+    }
+  }
+
+  // Calculate the end time for fetching events based on time window settings
+  calculateFetchEndTime() {
+    const now = new Date();
+    
+    if (this.state.timeWindowMode === 'Rolling') {
+      // Parse rolling time window (hh:mm format)
+      if (!validateRollingTimeWindow(this.state.rollingTimeWindow)) {
+        console.warn('Invalid rolling time window format, using default 24:00');
+        return new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      }
+      const [hours, minutes] = this.state.rollingTimeWindow.split(':').map(Number);
+      const totalMinutes = hours * 60 + minutes;
+      return new Date(now.getTime() + totalMinutes * 60 * 1000);
+    } else {
+      // Daily mode - calculate until the specified time of day
+      if (!validateDailyTime(this.state.dailyBeginsAt)) {
+        console.warn('Invalid daily time format, using default 4:00 AM');
+        const targetTime = new Date(now);
+        targetTime.setHours(4, 0, 0, 0);
+        if (targetTime <= now) {
+          targetTime.setDate(targetTime.getDate() + 1);
+        }
+        return targetTime;
+      }
+      const parts = this.state.dailyBeginsAt.split(' ');
+      if (parts.length !== 2) {
+        console.warn('Invalid daily time format, using default 4:00 AM');
+        const targetTime = new Date(now);
+        targetTime.setHours(4, 0, 0, 0);
+        if (targetTime <= now) {
+          targetTime.setDate(targetTime.getDate() + 1);
+        }
+        return targetTime;
+      }
+      const [time, period] = parts;
+      const [hours, minutes] = time.split(':').map(Number);
+      
+      // Convert to 24-hour format
+      let hour24 = hours;
+      if (period.toUpperCase() === 'PM' && hours !== 12) {
+        hour24 += 12;
+      } else if (period.toUpperCase() === 'AM' && hours === 12) {
+        hour24 = 0;
+      }
+      
+      // Create target time for today
+      const targetTime = new Date(now);
+      targetTime.setHours(hour24, minutes, 0, 0);
+      
+      // If target time has passed today, use tomorrow
+      if (targetTime <= now) {
+        targetTime.setDate(targetTime.getDate() + 1);
+      }
+      
+      return targetTime;
+    }
+  }
+
+  setTimeWindowMode(mode) {
+    this.setState({
+      timeWindowMode: mode,
+      lastFetchedMillis: null,
+      rollingTimeWindowError: null,
+      dailyBeginsAtError: null
+    }, () => {
+      this.saveTimeWindowSettings(
+        this.state.timeWindowMode,
+        this.state.rollingTimeWindow,
+        this.state.dailyBeginsAt
+      );
+    });
+  }
+
+  setRollingTimeWindow(value) {
+    // Validate the input
+    const isValid = validateRollingTimeWindow(value);
+    const error = isValid ? null : 'Format: hh:mm (max 168:00, minutes 0-59)';
+    
+    this.setState({
+      rollingTimeWindow: value,
+      rollingTimeWindowError: error,
+      // Only reset lastFetchedMillis (trigger refetch) if input is valid
+      lastFetchedMillis: isValid ? null : this.state.lastFetchedMillis
+    }, () => {
+      if (isValid) {
+        this.saveTimeWindowSettings(
+          this.state.timeWindowMode,
+          this.state.rollingTimeWindow,
+          this.state.dailyBeginsAt
+        );
+      }
+    });
+  }
+
+  setDailyBeginsAt(value) {
+    // Validate the input
+    const isValid = validateDailyTime(value);
+    const error = isValid ? null : 'Format: hh:mm AM/PM (e.g., 4:00 AM)';
+    
+    this.setState({
+      dailyBeginsAt: value,
+      dailyBeginsAtError: error,
+      // Only reset lastFetchedMillis (trigger refetch) if input is valid
+      lastFetchedMillis: isValid ? null : this.state.lastFetchedMillis
+    }, () => {
+      if (isValid) {
+        this.saveTimeWindowSettings(
+          this.state.timeWindowMode,
+          this.state.rollingTimeWindow,
+          this.state.dailyBeginsAt
+        );
+      }
+    });
+  }
     
   toggleCalendar(calendarId) {
     const selectedCalendars = {
@@ -232,7 +401,7 @@ class App extends Component {
 
     this.setState({
       events: events,
-      alertMessage: 0 < events.length ? MESSAGE_EMPTY : MESSAGE_FOUND_NO_EVENTS,
+      alertMessage: 0 < events.length ? MESSAGE_EMPTY : this.getNoEventsMessage(),
     });
   }
 
@@ -311,10 +480,11 @@ class App extends Component {
               promises.push(new Promise((resolve, reject) => {
                 console.debug("Will fetch events from calendar ID:", calendarId);
                 gapi.client.load('calendar', 'v3', () => {
+                  const fetchEndTime = this.calculateFetchEndTime();
                   gapi.client.calendar.events.list({
                     'calendarId': calendarId,
                     'timeMin': (new Date()).toISOString(),
-                    'timeMax': (new Date(Date.now() + CALENDAR_FETCH_TO_FUTURE_MILLIS)).toISOString(),
+                    'timeMax': fetchEndTime.toISOString(),
                     'showDeleted': false,
                     'singleEvents': true,
                     'maxResults': CALENDAR_FETCH_ROWS_MAX,
@@ -362,7 +532,7 @@ class App extends Component {
                 calendars,
                 events: events,
                 statusMessage: MESSAGE_EMPTY,
-                alertMessage: 0 < events.length ? MESSAGE_EMPTY : MESSAGE_FOUND_NO_EVENTS,
+                alertMessage: 0 < events.length ? MESSAGE_EMPTY : this.getNoEventsMessage(),
               });
             });
           });
@@ -445,6 +615,77 @@ class App extends Component {
             this.doToggleClockFormat();
           }}>
             Clock Format: {this.state.use24Hour ? '24 Hour' : '12 Hour'}
+          </div>
+          <div className="menu-item" onClick={(e) => e.stopPropagation()}>
+            <h3>Time Window</h3>
+            <div className="time-window-settings">
+              <div className="time-window-mode">
+                <label>
+                  <input
+                    type="radio"
+                    name="timeWindowMode"
+                    value="Rolling"
+                    checked={this.state.timeWindowMode === 'Rolling'}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      this.setTimeWindowMode('Rolling');
+                    }}
+                  />
+                  <span className="radio-label">Rolling</span>
+                  {this.state.timeWindowMode === 'Rolling' && (
+                    <div className="time-input-container">
+                      <input
+                        type="text"
+                        className={`time-input ${this.state.rollingTimeWindowError ? 'invalid' : ''}`}
+                        value={this.state.rollingTimeWindow}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          this.setRollingTimeWindow(e.target.value);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        placeholder="24:00"
+                      />
+                      {this.state.rollingTimeWindowError && (
+                        <span className="validation-error">{this.state.rollingTimeWindowError}</span>
+                      )}
+                    </div>
+                  )}
+                </label>
+              </div>
+              <div className="time-window-mode">
+                <label>
+                  <input
+                    type="radio"
+                    name="timeWindowMode"
+                    value="Daily"
+                    checked={this.state.timeWindowMode === 'Daily'}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      this.setTimeWindowMode('Daily');
+                    }}
+                  />
+                  <span className="radio-label">Daily</span>
+                  {this.state.timeWindowMode === 'Daily' && (
+                    <div className="time-input-container">
+                      <input
+                        type="text"
+                        className={`time-input ${this.state.dailyBeginsAtError ? 'invalid' : ''}`}
+                        value={this.state.dailyBeginsAt}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          this.setDailyBeginsAt(e.target.value);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        placeholder="4:00 AM"
+                      />
+                      {this.state.dailyBeginsAtError && (
+                        <span className="validation-error">{this.state.dailyBeginsAtError}</span>
+                      )}
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
           </div>
           {
             this.state.isSignedIn && this.state.calendarList.length > 0 ?
