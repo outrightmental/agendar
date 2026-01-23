@@ -43,6 +43,8 @@ Finally, as shown in the main photo, within 1 minute of occurring, an event is h
 
 It's ***COMPLETELY FREE TO USE*** at **[agendar.outright.io](https://agendar.outright.io)**&mdash; just login with Google to display your Calendar events.
 
+💡 **Install as a Progressive Web App (PWA)** for the best experience! See [installation instructions](#installing-agendar-as-a-pwa) below.
+
 We never access your information!
 
 Your browser will connect directly to Google Calendar in order display upcoming events in a unique way.
@@ -117,7 +119,41 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 
 ### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Agendar is fully installable as a Progressive Web App (PWA)! This provides:
+- **Offline support** - Continue viewing cached calendar data even without internet
+- **App-like experience** - Install on your device and launch like a native app
+- **Fast loading** - Essential assets are cached for instant startup
+- **Push notifications** - (Coming soon) Get notified before events start
+
+#### Installing Agendar as a PWA
+
+##### On Desktop (Chrome, Edge, Brave)
+1. Visit [agendar.outright.io](https://agendar.outright.io)
+2. Look for the install icon (⊕) in the address bar
+3. Click "Install" to add Agendar to your applications
+4. Launch from your applications menu or desktop shortcut
+
+##### On Mobile (iOS Safari)
+1. Open [agendar.outright.io](https://agendar.outright.io) in Safari
+2. Tap the Share button (□ with arrow)
+3. Scroll down and tap "Add to Home Screen"
+4. Tap "Add" to install
+5. Launch from your home screen
+
+##### On Mobile (Android Chrome)
+1. Visit [agendar.outright.io](https://agendar.outright.io) in Chrome
+2. Tap the menu (⋮) and select "Add to Home screen"
+3. Follow the prompts to install
+4. Launch from your app drawer or home screen
+
+#### PWA Features
+- **Service Worker**: Implements intelligent caching strategy
+- **Offline-capable**: Essential assets are precached for offline access
+- **Network-first for APIs**: Always fetches fresh calendar data when online
+- **Cache-first for assets**: Static resources load instantly from cache
+- **Auto-updates**: Service worker updates automatically when new versions are deployed
+
+For more technical details, see: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
 ### Advanced Configuration
 
