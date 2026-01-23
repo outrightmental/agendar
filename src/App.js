@@ -272,6 +272,7 @@ class App extends Component {
     this.setState({
       rollingTimeWindow: value,
       rollingTimeWindowError: error,
+      // Only reset lastFetchedMillis (trigger refetch) if input is valid
       lastFetchedMillis: isValid ? null : this.state.lastFetchedMillis
     }, () => {
       if (isValid) {
@@ -292,6 +293,7 @@ class App extends Component {
     this.setState({
       dailyBeginsAt: value,
       dailyBeginsAtError: error,
+      // Only reset lastFetchedMillis (trigger refetch) if input is valid
       lastFetchedMillis: isValid ? null : this.state.lastFetchedMillis
     }, () => {
       if (isValid) {
