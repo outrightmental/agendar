@@ -1,4 +1,4 @@
-[![[main] deploy](https://github.com/outrightmental/agendar/actions/workflows/main-deploy.yml/badge.svg)](https://github.com/outrightmental/agendar/actions/workflows/main-deploy.yml)
+[![Deploy](https://github.com/outrightmental/agendar/actions/workflows/deploy.yml/badge.svg)](https://github.com/outrightmental/agendar/actions/workflows/deploy.yml)
 
 # Agendar<sup>&trade;</sup>
 
