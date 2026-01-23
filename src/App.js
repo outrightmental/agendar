@@ -10,7 +10,6 @@ import {
   EVENT_DESCRIPTION_AUTO_CREATED_GOAL,
   GOOGLE_CLIENT_CONFIG,
   MESSAGE_EMPTY,
-  MESSAGE_FOUND_NO_EVENTS,
   MESSAGE_INITIALIZING,
   MESSAGE_LOADING_CALENDARS,
   MESSAGE_LOADING_EVENTS,
@@ -191,6 +190,23 @@ class App extends Component {
     localStorage.setItem('agendar_clock_format', newFormat.toString());
   }
 
+  // Generate dynamic "no events" message based on time window mode
+  getNoEventsMessage() {
+    if (this.state.timeWindowMode === 'Rolling') {
+      // Parse rolling time window to get hours
+      const [hours, minutes] = this.state.rollingTimeWindow.split(':').map(Number);
+      const totalHours = hours + (minutes / 60);
+      
+      // Round to nearest whole number for cleaner display
+      const displayHours = Math.round(totalHours);
+      
+      return `Your calendar is open for the next ${displayHours} hours!`;
+    } else {
+      // Daily mode
+      return "Your calendar is open for the rest of the day!";
+    }
+  }
+
   // Calculate the end time for fetching events based on time window settings
   calculateFetchEndTime() {
     const now = new Date();
@@ -344,7 +360,7 @@ class App extends Component {
 
     this.setState({
       events: events,
-      alertMessage: 0 < events.length ? MESSAGE_EMPTY : MESSAGE_FOUND_NO_EVENTS,
+      alertMessage: 0 < events.length ? MESSAGE_EMPTY : this.getNoEventsMessage(),
     });
   }
 
@@ -475,7 +491,7 @@ class App extends Component {
                 calendars,
                 events: events,
                 statusMessage: MESSAGE_EMPTY,
-                alertMessage: 0 < events.length ? MESSAGE_EMPTY : MESSAGE_FOUND_NO_EVENTS,
+                alertMessage: 0 < events.length ? MESSAGE_EMPTY : this.getNoEventsMessage(),
               });
             });
           });
