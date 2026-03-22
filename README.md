@@ -120,7 +120,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 ### Making a Progressive Web App
 
 Agendar is fully installable as a Progressive Web App (PWA)! This provides:
-- **Offline support** - Continue viewing cached calendar data even without internet
+- **Offline support** - App shell loads offline so you can start Agendar without internet (calendar data requires connectivity)
 - **App-like experience** - Install on your device and launch like a native app
 - **Fast loading** - Essential assets are cached for instant startup
 - **Push notifications** - (Coming soon) Get notified before events start
@@ -148,9 +148,10 @@ Agendar is fully installable as a Progressive Web App (PWA)! This provides:
 
 #### PWA Features
 - **Service Worker**: Implements intelligent caching strategy
-- **Offline-capable**: Essential assets are precached for offline access
-- **Network-first for APIs**: Always fetches fresh calendar data when online
-- **Cache-first for assets**: Static resources load instantly from cache
+- **Offline-capable**: App shell and essential assets are precached for offline access
+- **Network-only for external APIs**: Always fetches fresh calendar data directly from Google (no cached fallback)
+- **Network-first for app updates**: HTML is fetched fresh when online to ensure you get the latest version
+- **Cache-first for static assets**: Scripts, styles, and images load instantly from cache (limited to 50 most recent items)
 - **Auto-updates**: Service worker updates automatically when new versions are deployed
 
 For more technical details, see: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
