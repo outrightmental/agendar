@@ -151,7 +151,7 @@ Agendar is fully installable as a Progressive Web App (PWA)! This provides:
 - **Network-only for external APIs**: Always fetches fresh calendar data directly from Google (no cached fallback)
 - **Network-first for app updates**: HTML is fetched fresh when online to ensure you get the latest version
 - **Cache-first for static assets**: Scripts, styles, and images load instantly from cache (limited to 50 most recent items)
-- **Auto-updates**: Service worker updates automatically when new versions are deployed
+- **Auto-updates**: Service worker updates automatically when new versions are deployed (takes effect after closing all tabs)
 
 For more technical details, see: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 

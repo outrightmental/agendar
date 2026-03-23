@@ -94,11 +94,13 @@ self.addEventListener('fetch', (event) => {
           // Cache the updated navigation response
           if (response && response.status === 200) {
             const responseToCache = response.clone();
-            caches.open(CACHE_NAME)
+            const cachePromise = caches.open(CACHE_NAME)
               .then((cache) => cache.put(request, responseToCache))
               .catch((cacheError) => {
                 console.warn('Service Worker: Failed to cache navigation:', cacheError);
               });
+            // Ensure the cache update is tied to the fetch event's lifetime
+            event.waitUntil(cachePromise);
           }
           return response;
         })
@@ -145,15 +147,18 @@ self.addEventListener('fetch', (event) => {
               // Clone and cache the response for future use
               const responseToCache = response.clone();
               
-              caches.open(RUNTIME_CACHE)
-                .then(async (cache) => {
-                  await cache.put(request, responseToCache);
-                  // Limit cache size to prevent unbounded growth
-                  await limitCacheSize(RUNTIME_CACHE, MAX_RUNTIME_CACHE_SIZE);
-                })
-                .catch((cacheError) => {
-                  console.warn('Service Worker: Failed to cache response:', cacheError);
-                });
+              // Ensure cache update and eviction complete by tying them to the event lifetime
+              event.waitUntil(
+                caches.open(RUNTIME_CACHE)
+                  .then(async (cache) => {
+                    await cache.put(request, responseToCache);
+                    // Limit cache size to prevent unbounded growth
+                    await limitCacheSize(RUNTIME_CACHE, MAX_RUNTIME_CACHE_SIZE);
+                  })
+                  .catch((cacheError) => {
+                    console.warn('Service Worker: Failed to cache response:', cacheError);
+                  })
+              );
             }
 
             return response;
