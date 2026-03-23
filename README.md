@@ -117,29 +117,27 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/c
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+### Installing Agendar as a Progressive Web App
 
 Agendar is fully installable as a Progressive Web App (PWA)! This provides:
 - **Offline support** - App shell loads offline so you can start Agendar without internet (calendar data requires connectivity)
 - **App-like experience** - Install on your device and launch like a native app
 - **Fast loading** - Essential assets are cached for instant startup
 
-#### Installing Agendar as a PWA
-
-##### On Desktop (Chrome, Edge, Brave)
+#### On Desktop (Chrome, Edge, Brave)
 1. Visit [agendar.outright.io](https://agendar.outright.io)
 2. In your browser, open the address bar or main menu and look for an option like **"Install Agendar"**, **"Install app"**, or **"Install this site as an app"**
 3. Select the install option and confirm to add Agendar to your applications
 4. Launch Agendar from your applications menu, start menu, or desktop shortcut
 
-##### On Mobile (iOS Safari)
+#### On Mobile (iOS Safari)
 1. Open [agendar.outright.io](https://agendar.outright.io) in Safari
 2. Tap the **Share** button in the toolbar
 3. Scroll down and tap **"Add to Home Screen"**
 4. Tap **"Add"** to install
 5. Launch Agendar from your home screen
 
-##### On Mobile (Android Chrome)
+#### On Mobile (Android Chrome)
 1. Visit [agendar.outright.io](https://agendar.outright.io) in Chrome
 2. Open the browser menu and choose **"Install app"** or **"Add to Home screen"** (wording may vary)
 3. Follow the prompts to install
@@ -153,7 +151,7 @@ Agendar is fully installable as a Progressive Web App (PWA)! This provides:
 - **Cache-first for static assets**: Scripts, styles, and images load instantly from cache (limited to 50 most recent items)
 - **Auto-updates**: Service worker updates automatically when new versions are deployed (takes effect after closing all tabs)
 
-For more technical details, see: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+For more technical details about Progressive Web Apps, see: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
 ### Advanced Configuration
 
