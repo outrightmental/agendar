@@ -33,8 +33,6 @@ self.addEventListener('install', (event) => {
       })
       .then(() => {
         console.log('Service Worker: Precaching complete');
-        // Force the waiting service worker to become the active service worker
-        return self.skipWaiting();
       })
       .catch(error => {
         console.error('Service Worker: Precaching failed:', error);
@@ -58,9 +56,7 @@ self.addEventListener('activate', (event) => {
         );
       })
       .then(() => {
-        console.log('Service Worker: Claiming clients');
-        // Take control of all clients immediately
-        return self.clients.claim();
+        console.log('Service Worker: Cache cleanup complete');
       })
   );
 });
@@ -178,11 +174,4 @@ self.addEventListener('fetch', (event) => {
           });
       })
   );
-});
-
-// Handle messages from the client
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
 });

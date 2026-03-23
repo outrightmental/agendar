@@ -123,28 +123,27 @@ Agendar is fully installable as a Progressive Web App (PWA)! This provides:
 - **Offline support** - App shell loads offline so you can start Agendar without internet (calendar data requires connectivity)
 - **App-like experience** - Install on your device and launch like a native app
 - **Fast loading** - Essential assets are cached for instant startup
-- **Push notifications** - (Coming soon) Get notified before events start
 
 #### Installing Agendar as a PWA
 
 ##### On Desktop (Chrome, Edge, Brave)
 1. Visit [agendar.outright.io](https://agendar.outright.io)
-2. Look for the install icon (⊕) in the address bar
-3. Click "Install" to add Agendar to your applications
-4. Launch from your applications menu or desktop shortcut
+2. In your browser, open the address bar or main menu and look for an option like **"Install Agendar"**, **"Install app"**, or **"Install this site as an app"**
+3. Select the install option and confirm to add Agendar to your applications
+4. Launch Agendar from your applications menu, start menu, or desktop shortcut
 
 ##### On Mobile (iOS Safari)
 1. Open [agendar.outright.io](https://agendar.outright.io) in Safari
-2. Tap the Share button (□ with arrow)
-3. Scroll down and tap "Add to Home Screen"
-4. Tap "Add" to install
-5. Launch from your home screen
+2. Tap the **Share** button in the toolbar
+3. Scroll down and tap **"Add to Home Screen"**
+4. Tap **"Add"** to install
+5. Launch Agendar from your home screen
 
 ##### On Mobile (Android Chrome)
 1. Visit [agendar.outright.io](https://agendar.outright.io) in Chrome
-2. Tap the menu (⋮) and select "Add to Home screen"
+2. Open the browser menu and choose **"Install app"** or **"Add to Home screen"** (wording may vary)
 3. Follow the prompts to install
-4. Launch from your app drawer or home screen
+4. Launch Agendar from your app drawer or home screen
 
 #### PWA Features
 - **Service Worker**: Implements intelligent caching strategy
