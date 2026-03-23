@@ -6,15 +6,15 @@ const RUNTIME_CACHE = 'agendar-runtime-v1';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/site.webmanifest',
-  '/favicon.ico',
-  '/android-chrome-192x192.png',
-  '/android-chrome-512x512.png',
-  '/logo512.png',
-  '/apple-touch-icon.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './site.webmanifest',
+  './favicon.ico',
+  './android-chrome-192x192.png',
+  './android-chrome-512x512.png',
+  './logo512.png',
+  './apple-touch-icon.png'
 ];
 
 // Runtime cache configuration
