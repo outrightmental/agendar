@@ -11,6 +11,23 @@ afterEach(() => {
 });
 
 describe('Signal', () => {
+  // Issue #178: the app is sized against the viewport, which holds only while nothing above it is positioned.
+  test('never positions body where script runs: the app would collapse', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const styles = fs.readdirSync(__dirname).filter((name) => /\.s?css$/.test(name))
+      .map((name) => fs.readFileSync(path.join(__dirname, name), 'utf8').replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, ''));
+    expect(styles.length).toBeGreaterThan(0);
+    for (const text of styles) {
+      for (const [, selector, block] of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        if (/(^|[\s,])(html|body)\s*(,|$)/.test(selector.trim())) expect(block).not.toMatch(/position\s*:\s*(relative|absolute|fixed|sticky)/);
+      }
+    }
+    const page = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
+    expect(page).toContain('<noscript><style>body { position: relative; }</style></noscript>');
+    expect(page.replace(/<noscript>[\s\S]*?<\/noscript>/g, '')).not.toMatch(/body\s*\{[^}]*position/);
+  });
+
   test('sends only from a keyed build on the production host', () => {
     expect(signalAllowed(KEY, SIGNAL_HOST)).toBe(true);
     expect(signalAllowed(KEY, 'localhost')).toBe(false);
