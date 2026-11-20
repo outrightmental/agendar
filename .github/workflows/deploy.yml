@@ -48,6 +48,14 @@ jobs:
           REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
           REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
+          # Signal's public stream key (not a secret): the landing page's depth ladder and web client (src/_signal.js)
+          REACT_APP_SIGNAL_KEY: agendar-outright-io.f709074e5b7218d57f5329e9
+
+      # Signal: the page carries its depth ladder (49 rungs, the view eager and the rest lazy), first in <body>
+      - name: Verify the Signal ladder
+        run: |
+          test "$(grep -o 'in.signal.outright.io/v1/d?k=agendar-outright-io.f709074e5b7218d57f5329e9&amp;p=%2F&amp;' build/index.html | wc -l)" -eq 49
+          grep -q '<body><div data-signal-depth' build/index.html
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

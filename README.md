@@ -53,7 +53,7 @@ Authored by [Nick Charney Kaye](https://charneykaye.com) with &#9829; to meet th
 
 Sponsored by [Outright Mental](https://outrightmental.com)<sup>&trade;</sup>
 
-[Privacy](https://privacy.outright.io) and [Terms](https://terms.outright.io) 
+[Privacy](https://outrightmental.com/privacy/) and [Terms](https://terms.outright.io) 
 
 ## We <em>never</em> access your information!
 
@@ -72,7 +72,17 @@ These environment variables are optional (used only in production)
 
 ```
 REACT_APP_GOOGLE_ANALYTICS_ID=G-123
+REACT_APP_SIGNAL_KEY=agendar-outright-io.f709074e5b7218d57f5329e9
 ```
+
+### Signal
+
+[Signal](https://outrightmental.com/privacy/) is the studio's own first-party analytics, on the signed-out landing page only (`src/_signal.js`):
+
+* **Depth, with no consent asked.** A ladder of 1&times;1 images first in `<body>` (`public/index.html`), one every 200 px, which Signal's server counts with no script, no cookie and no id. The app moves it into the landing page's own scroller, and it goes with the landing page when a person signs in.
+* **Journeys, only after a yes.** The web client from `https://signal.outright.io/w/signal.js` shows its own banner, treats Global Privacy Control as a no, and is loaded only once Google says nobody is signed in. "Privacy choices" (beside Privacy and Terms) shows the banner again.
+
+Only a build with `REACT_APP_SIGNAL_KEY` carries either. The workflows set it (the pull request build only to check the ladder is there), a local build does not, and the web client also checks it is on agendar.outright.io. Nothing about a calendar is ever sent.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
