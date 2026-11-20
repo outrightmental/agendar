@@ -36,11 +36,13 @@
   }
 }
 
-// Signal (src/_signal.js). The depth ladder spans its positioned container's height: body for a reader
-// without script, then the landing page's wrapper, which is as tall as what #agendar-calendar scrolls.
-body {
-  position: relative;
-}
+// Signal (src/_signal.js). The depth ladder spans its positioned container's height: the landing page's
+// wrapper, which is as tall as what #agendar-calendar scrolls.
+//
+// NEVER position `body` here. #agendar is `position: absolute; height: 100%`, sized against the viewport
+// because nothing above it is positioned. A positioned body becomes what it is sized against, and the body
+// is 0 px tall (everything in it is out of flow): the whole app collapses to nothing (issue #178). A reader
+// without script, whose page does scroll in body, gets the rule from a <noscript> in public/index.html.
 
 .signal-depth-host {
   position: relative;

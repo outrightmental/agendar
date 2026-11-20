@@ -50,6 +50,12 @@
     Learn how to configure a non-root public URL by running `npm run build`.
   -->
   <title>Agendar by Outright Mental™</title>
+  <!--
+    Without script the page is the static content below, and scrolls in body: there, and only there, body is
+    what Signal's depth ladder spans. With script the app sizes itself against the viewport, and a positioned
+    body collapses it (issue #178).
+  -->
+  <noscript><style>body { position: relative; }</style></noscript>
 </head>
 <body>
 <!--
