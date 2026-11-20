@@ -19,6 +19,7 @@ import {validateRollingTimeWindow, validateDailyTime} from "./_timeWindowValidat
 import Content from "./Content";
 import Event from "./Event";
 import Clock from "./Clock";
+import {adoptLadder, loadSignal, onPrivacyChoices} from "./_signal";
 
 class App extends Component {
 
@@ -123,6 +124,9 @@ class App extends Component {
     document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange);
     document.addEventListener('mozfullscreenchange', this.handleFullscreenChange);
     document.addEventListener('MSFullscreenChange', this.handleFullscreenChange);
+
+    // "Privacy choices" links show Signal's banner again (src/_signal.js)
+    document.addEventListener('click', onPrivacyChoices);
   }
 
   componentWillUnmount() {
@@ -133,6 +137,7 @@ class App extends Component {
     document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange);
     document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange);
     document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange);
+    document.removeEventListener('click', onPrivacyChoices);
   }
 
   // Pulse happens every N milliseconds
@@ -153,9 +158,12 @@ class App extends Component {
     window.gapi.load('auth2', () => {
       this.auth2 = gapi.auth2.init(GOOGLE_CLIENT_CONFIG)
       this.auth2.then(() => {
+        const isSignedIn = this.auth2.isSignedIn.get();
         this.setState({
-          isSignedIn: this.auth2.isSignedIn.get(),
+          isSignedIn: isSignedIn,
         });
+        // Signal's web client is for the public landing page only: never on a signed-in page (src/_signal.js)
+        if (!isSignedIn) loadSignal();
         this.pulse();
       });
     });
@@ -538,15 +546,18 @@ class App extends Component {
     } else {
       return (
         <div id="agendar-calendar">
-          <div className="hero">
-            <Content name="hero"/>
-          </div>
-          <button className="space-above" id="login-button">Login with Google</button>
-          <div className="content space-above">
-            <Content name="details"/>
-            <Content name="privacy-promise"/>
-            <Content name="about"/>
-            <Content name="legal"/>
+          {/* Signal's depth ladder moves in here, the top of what scrolls; it goes when this does (src/_signal.js) */}
+          <div className="signal-depth-host" ref={adoptLadder}>
+            <div className="hero">
+              <Content name="hero"/>
+            </div>
+            <button className="space-above" id="login-button">Login with Google</button>
+            <div className="content space-above">
+              <Content name="details"/>
+              <Content name="privacy-promise"/>
+              <Content name="about"/>
+              <Content name="legal"/>
+            </div>
           </div>
         </div>
       )

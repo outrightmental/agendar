@@ -52,6 +52,17 @@
   <title>Agendar by Outright Mental™</title>
 </head>
 <body>
+<!--
+  Signal's depth ladder (outrightmental/signal, sdk/web/ladder.mjs): one 1×1 image every 200 px down
+  the page, which Signal's server counts with no script, no cookie and no id. The first is the view;
+  the rest are lazy, so the browser asks for each as the reader nears it. Only a build that has
+  REACT_APP_SIGNAL_KEY carries it: the workflows set it, a local build does not, and only the deploy
+  workflow publishes, to agendar.outright.io. The app moves it into the landing page's own scroller (src/_signal.js)
+  and drops it with the landing page once a person signs in.
+-->
+<% if (process.env.REACT_APP_SIGNAL_KEY) { var signalBase = 'https://in.signal.outright.io/v1/d?k=' + encodeURIComponent(process.env.REACT_APP_SIGNAL_KEY) + '&amp;p=' + encodeURIComponent('/'); %>
+<div data-signal-depth aria-hidden="true" style="position:absolute;top:0;bottom:0;left:0;width:1px;overflow:hidden;pointer-events:none;opacity:0"><% for (var signalAt = 0; signalAt <= 47; signalAt++) { %><img src="<%= signalBase %>&amp;b=<%= signalAt %>-<%= signalAt %>" alt="" width="1" height="1"<%= signalAt > 0 ? ' loading="lazy"' : '' %> decoding="async" referrerpolicy="no-referrer" style="position:absolute;left:0;top:<%= signalAt * 200 %>px"><% } %><img src="<%= signalBase %>&amp;e=1" alt="" width="1" height="1" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="position:absolute;left:0;bottom:0"></div>
+<% } %>
 
 <div id="static-content-example">
   <!--
@@ -109,6 +120,10 @@
 <div id="static-content-privacy-promise">
   <p>We <em>never</em> access your information!</p>
   <p>Your browser will connect directly to Google Calendar in order display upcoming events in a unique way.</p>
+  <p>Before you sign in, Signal, our own analytics, counts how far this page is read, with no cookie and no
+    identifier. Only if you say yes does it also remember this browser, so we can see how people find their way
+    between our sites. A Global Privacy Control signal counts as a no. To say no, or to change your answer, use
+    Privacy choices while signed out. Nothing about your calendar is ever sent.</p>
 </div>
 
 <div id="static-content-about">
@@ -128,11 +143,13 @@
   <p>
     <a target="_blank"
        rel="noreferrer"
-       href="https://privacy.outright.io">Privacy</a>
+       href="https://outrightmental.com/privacy/">Privacy</a>
     and
     <a target="_blank"
        rel="noreferrer"
-       href="https://terms.outright.io">Terms</a>
+       href="https://terms.outright.io">Terms</a><span class="signal-choices">
+    &middot;
+    <a href="#privacy-choices" data-signal-choices>Privacy choices</a></span>
   </p>
 </div>
 

@@ -36,6 +36,28 @@
   }
 }
 
+// Signal (src/_signal.js). The depth ladder spans its positioned container's height: body for a reader
+// without script, then the landing page's wrapper, which is as tall as what #agendar-calendar scrolls.
+body {
+  position: relative;
+}
+
+.signal-depth-host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+// "Privacy choices" shows only where Signal's web client is running
+.signal-choices {
+  display: none;
+}
+
+.signal-on .signal-choices {
+  display: inline;
+}
+
 #agendar-clock {
   padding-top: 1.5em;
   display: flex;
